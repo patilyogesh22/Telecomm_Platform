@@ -9,7 +9,7 @@ ChromaDB Vector Database
 import os
 import re
 import chromadb
-from chromadb.utils import embedding_functions
+from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
 
 # ─────────────────────────────────────────────
 #  Paths
@@ -27,7 +27,7 @@ try:
 except AttributeError:
     _chroma_client = chromadb.Client()
 
-_embed_fn = embedding_functions.DefaultEmbeddingFunction()  # all-MiniLM-L6-v2
+_embed_fn = DefaultEmbeddingFunction()  # all-MiniLM-L6-v2
 
 _plan_collection    = None
 _concept_collection = None

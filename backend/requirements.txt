@@ -1,6 +1,4 @@
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch
-sentence-transformers
 chromadb
 flask
 flask-cors
@@ -8,3 +6,4 @@ flask-sqlalchemy
 werkzeug
 python-dotenv
 gunicorn
+requests
