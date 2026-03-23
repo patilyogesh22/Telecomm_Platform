@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+.Python
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Environment variables — NEVER commit these
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.sqlite3
+instance/
+
+# Docker
+.docker/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Distribution
+dist/
+build/
+*.egg-info/
+
+# ML model cache (large files)
+backend/chroma_db/
+*.bin
+*.pt
+
+# Test
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Nginx certs (keep out of git)
+nginx/certs/

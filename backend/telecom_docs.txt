@@ -1,0 +1,137 @@
+==== PLAN: BasicConnect 4G ====
+ID: plan_001
+Type: Prepaid
+Price: 199 INR/month
+Data: 1GB total
+Speed: 4G LTE up to 25 Mbps
+Calls: 100 minutes
+SMS: 100 SMS
+Validity: 28 days
+Features: No contract, Auto-renewal optional, Basic data rollover
+Best For: Light users, backup SIM, elderly users, first-time smartphone users
+Description: Entry-level prepaid plan with 1GB 4G data, 100 minutes, and 100 SMS for 28 days at just Rs.199. Perfect for users who need affordable, reliable connectivity without heavy data consumption.
+
+==== PLAN: SmartDaily 5G ====
+ID: plan_002
+Type: Prepaid
+Price: 299 INR/month
+Data: 2GB per day (resets daily)
+Speed: 5G up to 1 Gbps, 4G LTE fallback at 50 Mbps
+Calls: Unlimited
+SMS: 100 SMS per day
+Validity: 28 days
+Features: 5G ready, Daily data reset, Free Netflix basic subscription, Wi-Fi calling, Data rollover 200MB/day
+Best For: Daily heavy users, streamers, remote workers, young professionals
+Description: Daily 2GB 5G plan for 28 days at Rs.299. Unlimited calls, 100 SMS/day, and bundled Netflix basic. Ideal for users who need consistent daily high-speed connectivity.
+
+==== PLAN: FamilyShare Pro ====
+ID: plan_003
+Type: Postpaid
+Price: 999 INR/month
+Data: 100GB shared across all members
+Speed: 5G/4G up to 500 Mbps
+Calls: Unlimited for all members
+SMS: Unlimited for all members
+Validity: 30 days
+Members: Up to 4 family members (30GB per member + shared reserve pool)
+Features: Multi-SIM support, Parental controls, International roaming in 20 countries, Free Disney+ Hotstar subscription, Priority customer support 24/7
+Best For: Families, households with multiple devices, frequent travelers
+Description: Premium family postpaid plan at Rs.999/month. Share 100GB 5G data across 4 family members. Includes Disney+ Hotstar, international roaming in 20 countries, and round-the-clock priority support.
+
+==== PLAN: BusinessElite 5G ====
+ID: plan_004
+Type: Postpaid Enterprise
+Price: 1499 INR/month
+Data: Unlimited (5G priority network)
+Speed: 5G priority network up to 2 Gbps
+Calls: Unlimited domestic + 500 international minutes
+SMS: Unlimited
+Validity: 30 days
+Features: Dedicated account manager, SLA 99.9% uptime guarantee, Static IP address, VPN support, Cloud backup 100GB, Microsoft 365 Basic license, IoT SIM management portal, API access
+Best For: Enterprises, remote teams, IoT deployments, businesses needing static IP
+Description: Enterprise-grade 5G plan at Rs.1499/month. Unlimited priority 5G data, 500 international minutes, static IP, VPN, Microsoft 365, 100GB cloud backup, and a 99.9% SLA. Comes with a dedicated account manager and IoT management portal.
+
+==== PLAN: TravelGlobal SIM ====
+ID: plan_005
+Type: International Roaming
+Price: 2499 INR/month
+Data: 5GB international data + Unlimited domestic data
+Speed: 4G LTE globally up to 150 Mbps, 5G in partner countries
+Calls: 200 international minutes + Unlimited domestic calls
+SMS: Unlimited domestic + 100 international SMS
+Validity: 30 days
+Features: Coverage in 150+ countries, Zero roaming surcharges, Local number activation in 50 countries, Basic travel insurance, Airport lounge access 2x per month, Real-time data usage alerts
+Best For: International travelers, business travelers, expats, digital nomads
+Description: Global travel SIM at Rs.2499/month. Roam in 150+ countries with 5GB data, 200 international minutes, and 2 complimentary airport lounge accesses per month. No roaming surcharges ever.
+
+==== PLAN: IoTConnect M2M ====
+ID: plan_006
+Type: IoT / M2M (Machine-to-Machine)
+Price: 49 INR/SIM/month
+Data: 500MB per SIM
+Speed: NB-IoT (Narrowband IoT), LTE-M, 2G/4G fallback
+Calls: Not applicable (data-only SIM)
+SMS: 50 SMS for device alerts
+Validity: 30 days
+Features: NB-IoT protocol support, LTE-M protocol support, Ultra-low power consumption mode, Bulk SIM management portal, RESTful API access, Real-time monitoring dashboard, SIM activation/deactivation API, FOTA (Firmware Over The Air) support
+Best For: Smart meters, GPS trackers, environmental sensors, industrial IoT, agriculture IoT, smart city infrastructure
+Description: IoT/M2M SIM at just Rs.49/SIM/month. 500MB data optimized for machine communication. Supports NB-IoT and LTE-M for battery-powered devices. Includes bulk management portal and API access for fleet management.
+
+==== PLAN: StudentFlex ====
+ID: plan_007
+Type: Prepaid (Student Special)
+Price: 149 INR per 56 days
+Data: 1.5GB per day
+Speed: 4G LTE up to 150 Mbps
+Calls: Unlimited
+SMS: Unlimited
+Validity: 56 days (2 months coverage)
+Features: Extended 56-day validity for semester alignment, Education app zero-rating (50+ apps including Coursera, Khan Academy, BYJU's, Unacademy), Free Google One 15GB storage, Night unlimited data (12AM to 6AM), Student ID verification required at activation
+Best For: College students, school students, budget-conscious youth, e-learning platform users
+Description: Student-exclusive prepaid plan at Rs.149 for 56 days. 1.5GB/day 4G data, unlimited calls/SMS, zero-rated education apps, free Google One 15GB, and night unlimited data. Student ID required.
+
+==== PLAN: StreamMax 5G ====
+ID: plan_008
+Type: Postpaid
+Price: 699 INR/month
+Data: 75GB
+Speed: 5G up to 1.5 Gbps, mmWave in select metro cities
+Calls: Unlimited
+SMS: Unlimited
+Validity: 30 days
+Features: 4K UHD streaming optimization with QoS priority, Full OTT bundle (Netflix Standard + Amazon Prime Video + Disney+ Hotstar + SonyLIV + Zee5), Dolby Atmos audio optimization, Smart TV app casting support, Dedicated 5G mmWave coverage in metro cities, Binge-On mode (video doesn't count toward cap on partner apps)
+Best For: Entertainment enthusiasts, gamers, smart home users, 4K content creators
+Description: Entertainment-first 5G plan at Rs.699/month. 75GB premium data with 4K streaming optimization. Includes the full OTT bundle: Netflix, Prime Video, Hotstar, SonyLIV, Zee5. Binge-On mode for zero-rated streaming on partner apps.
+
+==== CONCEPT: 5G Technology ====
+5G (Fifth Generation) is the latest wireless network standard providing peak data speeds up to 20 Gbps theoretical, with real-world speeds of 1-4 Gbps on mmWave and 100-500 Mbps on Sub-6GHz bands. Key advantages over 4G LTE: ultra-low latency under 1 millisecond (vs 20-50ms for 4G), massive device density supporting 1 million devices per square kilometer, and network slicing for dedicated virtual network segments. 5G uses three spectrum bands: Low-band (sub-1GHz, wide coverage), Mid-band (1-6GHz, balance of speed and coverage), and High-band mmWave (24GHz+, extreme speed, short range). 5G enables autonomous vehicles, remote surgery, AR/VR streaming, and smart city infrastructure.
+
+==== CONCEPT: NB-IoT (Narrowband IoT) ====
+NB-IoT is a 3GPP Low Power Wide Area Network (LPWAN) standard defined in Release 13. Operating in licensed spectrum (700MHz, 800MHz, 900MHz bands), it provides: extended battery life (10+ years on AA batteries), deep indoor penetration (20dB better than GPRS), low cost modules (under $5), and support for 50,000+ devices per cell. NB-IoT transmits in a narrow 200kHz channel with peak data rate of 250 Kbps downlink. Ideal for smart meters, environmental sensors, asset tracking, and smart agriculture where infrequent small data transmissions are needed.
+
+==== CONCEPT: LTE-M (LTE for Machines) ====
+LTE-M (also called Cat-M1) is a 3GPP LPWAN standard for IoT. Unlike NB-IoT, LTE-M supports voice calls (VoLTE), mobility/handover between cells, and higher data rates (1 Mbps). Uses 1.4MHz bandwidth with PSM (Power Saving Mode) and eDRX (Extended Discontinuous Reception) for battery optimization. Battery life up to 10 years. Supports FOTA (Firmware Over The Air updates). Best for mobile IoT assets: vehicle tracking, wearables, medical devices that need occasional higher throughput or mobility.
+
+==== CONCEPT: VoLTE (Voice over LTE) ====
+VoLTE enables high-definition voice calls transmitted as data packets over 4G/5G networks rather than using legacy 2G/3G circuit-switched voice. Benefits: HD voice quality (wideband audio at 16kHz vs 8kHz for 3G), faster call connection (under 1 second vs 5-8 seconds for 3G), simultaneous voice and high-speed data, 40% better spectral efficiency. VoLTE uses IMS (IP Multimedia Subsystem) core. When VoLTE is unavailable, phones fall back to CSFB (Circuit Switched Fallback) to 3G/2G for calls.
+
+==== CONCEPT: eSIM ====
+eSIM (Embedded SIM) is a programmable SIM soldered directly onto a device's motherboard. Unlike physical SIM cards, eSIM can be remotely provisioned with a carrier profile via RSP (Remote SIM Provisioning) using SM-DP+ servers. Supports multiple carrier profiles stored simultaneously (only one active). Benefits: no physical SIM swap needed, device activation anywhere globally, smaller form factor for wearables and IoT, carrier switching via software. eSIM follows GSMA SGP.02 (M2M) and SGP.22 (Consumer) specifications.
+
+==== CONCEPT: Network Slicing ====
+Network slicing is a 5G core network capability that creates multiple virtual networks (slices) on shared physical infrastructure. Each slice has dedicated guaranteed QoS parameters: bandwidth, latency, reliability. Example slices: eMBB (enhanced Mobile Broadband) for streaming, URLLC (Ultra-Reliable Low Latency Communications) for autonomous vehicles, mMTC (massive Machine Type Communications) for IoT. Slices are isolated — a congested consumer slice doesn't affect an enterprise URLLC slice. Managed via SDN (Software Defined Networking) and NFV (Network Function Virtualization).
+
+==== CONCEPT: Static IP in Telecom ====
+A static IP address is a fixed, permanent public IP address assigned to a SIM card that never changes across sessions. Unlike dynamic IPs (assigned fresh each session from a DHCP pool), static IPs enable: inbound connections to devices (hosting servers, remote desktop), consistent whitelisting in firewalls, reliable VPN endpoint configuration, and device management at known addresses. Critical for enterprise use cases: remote CCTV monitoring, ATM networks, industrial SCADA systems, branch office connectivity. Static IPs cost more due to IPv4 scarcity and dedicated routing table entries.
+
+==== CONCEPT: Roaming ====
+Mobile roaming enables a subscriber to use their home network subscription while physically present in another country or region. Two types: National Roaming (using another domestic carrier's network in coverage gaps) and International Roaming (using partner networks abroad). Roaming works via SS7/DIAMETER protocol messages between home network (HLR/HSS) and visited network (VLR). Wholesale roaming agreements between operators define inter-carrier settlement rates (IOT rates). Data roaming uses GPRS/LTE roaming via GRX/IPX interconnects. With 5G, roaming uses N17 interface and SEPP (Security Edge Protection Proxy).
+
+==== CONCEPT: Data Rollover ====
+Data rollover is a plan feature that carries unused data allocation forward to the next billing cycle rather than expiring it. Implementations vary: Full rollover (all unused data carried forward), Capped rollover (maximum rollover limit, e.g. 10GB cap), Expiry-based rollover (rolled data expires after 1 billing cycle). Rollover incentivizes plan upgrades and reduces subscriber churn. Telecom operators manage rollover accounting via PCRF (Policy and Charging Rules Function) and OCS (Online Charging System) nodes in the core network.
+
+==== CONCEPT: QoS (Quality of Service) ====
+QoS in telecommunications refers to traffic management mechanisms that prioritize network resources for specific applications or subscribers. Key QoS parameters: bandwidth (throughput guarantee), latency (delay bound), jitter (delay variation), and packet loss rate. In LTE/5G, QoS is managed via QCI/5QI (QoS Class Identifier / 5G QoS Indicator) values: QCI-1 for VoLTE (conversational voice), QCI-4 for gaming, QCI-9 for best-effort internet. The PCRF/PCF (Policy Charging and Rules Function) enforces QoS policies. Premium plans receive higher QCI values ensuring better experience during network congestion.
+
+==== CONCEPT: MVNO (Mobile Virtual Network Operator) ====
+An MVNO is a wireless service provider that does not own licensed spectrum or network infrastructure. Instead, MVNOs lease wholesale capacity from MNOs (Mobile Network Operators) and resell it under their own brand with value-added services. MVNO types: Full MVNO (owns core network, HLR/HSS, billing), Light MVNO (leases most network functions), Enhanced Service Provider (reseller with branded experience). MVNOs target niche markets: budget MVNOs (low cost), ethnic MVNOs (international calling), enterprise MVNOs (custom SLAs), IoT MVNOs (M2M focus). Examples: Google Fi (MVNO on T-Mobile/US Cellular), Boost Mobile (MVNO on AT&T).
