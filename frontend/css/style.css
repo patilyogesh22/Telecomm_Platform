@@ -1151,3 +1151,193 @@ kbd {
   .user-dropdown         { right:-10px; min-width:180px; }
   .chat-bubble           { max-width:90%; }
 }
+/* ════════════════════════════════════════════
+   PAY BILL / RECHARGE
+════════════════════════════════════════════ */
+
+.service-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.service-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.service-tab:hover { border-color: var(--primary); color: var(--primary); }
+.service-tab.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.recharge-card { max-width: 640px; }
+
+.recharge-current-plan {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--bg-secondary);
+  border-radius: 10px;
+  margin-bottom: 16px;
+  border: 1.5px solid var(--border);
+}
+
+.recharge-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.recharge-plan-card {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  background: var(--bg-secondary);
+}
+.recharge-plan-card:hover  { border-color: var(--primary); transform: translateY(-2px); }
+.recharge-plan-card.selected { border-color: var(--primary); background: rgba(99,102,241,0.08); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+.recharge-plan-card.current { border-color: #10B981; }
+
+.rp-price    { font-size: 22px; font-weight: 700; color: var(--primary); }
+.rp-name     { font-size: 12px; color: var(--gray); margin: 2px 0; }
+.rp-data     { font-size: 13px; font-weight: 600; margin-top: 4px; }
+.rp-validity { font-size: 12px; color: var(--gray); }
+.rp-desc     { font-size: 11px; color: var(--gray); margin-top: 4px; line-height: 1.4; }
+.rp-badge    { position: absolute; top: -8px; right: 8px; background: var(--primary); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 20px; }
+.rp-badge.current-badge { background: #10B981; }
+
+.recharge-summary-box {
+  background: var(--bg-secondary);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.summary-row:last-of-type { border-bottom: none; }
+.price-highlight { font-size: 20px; color: var(--primary); }
+
+.recharge-success {
+  text-align: center;
+  padding: 30px;
+}
+
+/* Transaction list */
+.txn-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.txn-item:last-child { border-bottom: none; }
+.txn-status-ok  { color: #10B981; font-weight: 600; }
+
+/* ════════════════════════════════════════════
+   PLANS — MOBILE LOOKUP
+════════════════════════════════════════════ */
+
+.mobile-plan-result { margin-top: 4px; }
+
+.current-plan-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.08));
+  border: 1.5px solid var(--primary);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 4px;
+}
+.operator-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+.current-plan-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--gray);
+  min-width: 140px;
+}
+.current-plan-stats i { color: var(--primary); width: 16px; }
+
+.alt-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+}
+.alt-plan-card {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 14px;
+  background: var(--bg-secondary);
+  position: relative;
+  transition: all 0.2s;
+}
+.alt-plan-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+.alt-plan-card.popular { border-color: var(--primary); }
+.alt-plan-price { font-size: 24px; font-weight: 700; color: var(--primary); }
+.alt-plan-meta  { font-size: 12px; color: var(--gray); margin: 2px 0 4px; }
+.alt-plan-data  { font-size: 13px; font-weight: 600; }
+.alt-plan-desc  { font-size: 11px; color: var(--gray); margin-top: 4px; line-height: 1.4; }
+
+/* ════════════════════════════════════════════
+   QUIZ — AI SOURCE TOGGLE
+════════════════════════════════════════════ */
+.source-pill { font-size: 13px; }
+
+#aiTopicInput {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text);
+  font-size: 14px;
+  width: 100%;
+  font-family: inherit;
+}
+#aiTopicInput:focus { outline: none; border-color: var(--primary); }
+
+@media (max-width: 600px) {
+  .service-tabs { gap: 6px; }
+  .service-tab  { padding: 7px 11px; font-size: 12px; }
+  .recharge-plans-grid { grid-template-columns: repeat(2, 1fr); }
+  .alt-plans-grid { grid-template-columns: 1fr 1fr; }
+  .current-plan-banner { flex-direction: column; }
+}

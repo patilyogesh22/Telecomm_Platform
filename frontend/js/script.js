@@ -192,6 +192,7 @@ function switchPage(page) {
   if (page === 'profile')       loadProfile();
   if (page === 'quiz-history')  loadQuizHistory();
   if (page === 'notifications') loadNotifications();
+  if (page === 'paybill')       initPayBill();
 }
 
 // ════════════════════════════════════════════
@@ -264,6 +265,32 @@ async function loadPlans() {
       fetch('/api/plans').then(r => r.json()),
       apiFetch('/api/plan'),
     ]);
+
+    // Inject mobile lookup section if not already present
+    const plansPage = document.getElementById('plans-page');
+    if (plansPage && !document.getElementById('mobilePlanLookup')) {
+      const lookupDiv = document.createElement('div');
+      lookupDiv.id = 'mobilePlanLookup';
+      lookupDiv.className = 'card';
+      lookupDiv.style.cssText = 'margin-bottom:24px;padding:24px;';
+      lookupDiv.innerHTML = `
+        <h3 style="margin-bottom:4px;"><i class="fas fa-mobile-alt"></i> Check Your Mobile Plan</h3>
+        <p style="color:var(--gray);margin-bottom:16px;font-size:14px;">Enter your mobile number to see your current plan and available options</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input id="planLookupNumber" type="tel" maxlength="10" placeholder="Enter 10-digit mobile number"
+            style="flex:1;min-width:200px;padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg-secondary);color:var(--text);"
+            onkeydown="if(event.key==='Enter') lookupMobilePlan()">
+          <button id="planLookupBtn" class="btn btn-primary" onclick="lookupMobilePlan()">
+            <i class="fas fa-search"></i> Check Plan
+          </button>
+        </div>
+        <div id="mobilePlanResult" style="margin-top:20px;"></div>`;
+      // Insert before plansGrid's parent or at top of plans-page
+      const grid = document.getElementById('plansGrid');
+      if (grid && grid.parentNode) grid.parentNode.insertBefore(lookupDiv, grid.parentNode.firstChild);
+      else plansPage.prepend(lookupDiv);
+    }
+
     document.getElementById('plansGrid').innerHTML = plans.map(p => `
       <div class="card plan-card ${p.popular ? 'popular' : ''} ${myPlan && p.id === myPlan.id ? 'current-plan' : ''}">
         ${p.popular ? '<div class="plan-badge">⭐ Popular</div>' : ''}
@@ -408,18 +435,36 @@ async function loadNotifications() {
 //  QUIZ BOT
 // ════════════════════════════════════════════
 
+// Quiz state — add AI mode flag
+let quizIsAI = false;
+let quizAIFullData = []; // stores full AI question data including correct answer
+
 function setDiff(btn) {
   document.querySelectorAll('.diff-pill').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   quizDiff = btn.dataset.val;
 }
 
+function setQuizSource(btn) {
+  document.querySelectorAll('.source-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  quizIsAI = btn.dataset.src === 'ai';
+  const topicRow = document.getElementById('aiTopicRow');
+  if (topicRow) topicRow.style.display = quizIsAI ? 'flex' : 'none';
+}
+
 async function startQuiz() {
   const count = document.getElementById('quizCount').value;
+  const topic = document.getElementById('aiTopicInput') ? document.getElementById('aiTopicInput').value.trim() || 'Indian telecom plans' : 'Indian telecom plans';
+  const url = quizIsAI
+    ? `/api/quiz/questions?source=ai&count=${count}&topic=${encodeURIComponent(topic)}`
+    : `/api/quiz/questions?difficulty=${quizDiff}&count=${count}`;
   try {
-    const res = await fetch(`/api/quiz/questions?difficulty=${quizDiff}&count=${count}`, { credentials: 'include' });
+    const res = await fetch(url, { credentials: 'include' });
     if (res.status === 401) { showToast('Please login to take the quiz', 'error'); return; }
-    quizQuestions  = await res.json();
+    const rawQs = await res.json();
+    quizQuestions  = rawQs;
+    quizAIFullData = quizIsAI ? rawQs : [];  // AI questions carry full data from server cache; we need correct answer on submit via question_data
     quizIndex      = 0;
     quizScore      = 0;
     quizCorrect    = 0;
@@ -527,11 +572,20 @@ async function submitAnswer(qid, answer, btn) {
   fb.className = 'quiz-feedback';
   fb.style.display = 'block';
 
+  // Build payload — for AI questions include full question_data
+  const q = quizQuestions[quizIndex];
+  const isAIQ = quizIsAI || qid.startsWith('ai_');
+  const payload = { question_id: qid, answer };
+  if (isAIQ) {
+    payload._ai = true;
+    payload.question_data = q; // server needs options + correct key
+  }
+
   try {
     const res    = await fetch('/api/quiz/submit', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ question_id: qid, answer })
+      body: JSON.stringify(payload)
     });
     const result = await res.json();
 
@@ -685,6 +739,280 @@ document.addEventListener('keydown', e => {
   const btn = document.querySelector(`.quiz-option[data-key="${key}"]:not(:disabled)`);
   if (btn) btn.click();
 });
+
+// ════════════════════════════════════════════
+//  PAY BILL / RECHARGE
+// ════════════════════════════════════════════
+
+let rechargeOperators = [];
+let selectedRechargeService = 'mobile';
+
+async function initPayBill() {
+  await loadRechargeOperators('mobile');
+  selectedRechargeService = 'mobile';
+  document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
+  const first = document.querySelector('.service-tab');
+  if (first) first.classList.add('active');
+  document.getElementById('manualAmountGroup').style.display = 'none';
+  document.getElementById('planPickerArea').innerHTML = '';
+  document.getElementById('rechargeSummary').style.display = 'none';
+  loadTransactions();
+}
+
+async function selectService(btn, service) {
+  document.querySelectorAll('.service-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  selectedRechargeService = service;
+  await loadRechargeOperators(service);
+  // Clear previous state
+  const ni = document.getElementById('rechargeNumber');
+  if (ni) ni.value = '';
+  document.getElementById('planPickerArea').innerHTML = '';
+  document.getElementById('rechargeSummary').style.display = 'none';
+  // Show manual amount for non-mobile services
+  const manualGroup = document.getElementById('manualAmountGroup');
+  const label = document.getElementById('rechargeNumberLabel');
+  if (manualGroup) manualGroup.style.display = service === 'mobile' ? 'none' : 'block';
+  if (label) {
+    const labels = { mobile:'Mobile Number', dth:'Customer ID', broadband:'Account Number', postpaid:'Mobile Number', electricity:'Consumer Number', gas:'BP Number', water:'Account Number', landline:'Phone Number' };
+    label.textContent = labels[service] || 'Account Number';
+  }
+}
+
+async function loadRechargeOperators(service) {
+  try {
+    const ops = await apiFetch(`/api/payment/operators?service=${service}`);
+    const sel = document.getElementById('operatorSelect');
+    if (!sel || !ops) return;
+    sel.innerHTML = '<option value="">-- Select Operator --</option>' +
+      ops.map(o => `<option value="${o.id}" data-name="${o.name}">${o.name}</option>`).join('');
+    rechargeOperators = ops;
+  } catch(e) { console.error(e); }
+}
+
+async function detectOperator() {
+  const number = document.getElementById('rechargeNumber').value.trim().replace(/\D/g,'');
+  if (number.length !== 10) { showToast('Enter a valid 10-digit number', 'error'); return; }
+  if (selectedRechargeService !== 'mobile') return;
+  try {
+    const res = await fetch('/api/payment/detect', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number })
+    });
+    const data = await res.json();
+    if (data.error) { showToast(data.error, 'error'); return; }
+    // Auto-select operator
+    const sel = document.getElementById('operatorSelect');
+    if (sel) {
+      for (const opt of sel.options) {
+        if (opt.text.toLowerCase().includes(data.operator.toLowerCase())) {
+          sel.value = opt.value;
+          break;
+        }
+      }
+    }
+    renderPlanPicker(data.all_plans, data.current_plan, data.operator);
+  } catch(e) { showToast('Detection failed', 'error'); }
+}
+
+function renderPlanPicker(plans, currentPlan, operator) {
+  const area = document.getElementById('planPickerArea');
+  area.innerHTML = `
+    <div class="recharge-current-plan">
+      <strong>📱 Current Plan (${operator}):</strong>
+      <span class="badge badge-success">${currentPlan.name}</span>
+      <span style="color:var(--gray);font-size:13px;">${currentPlan.data} · ${currentPlan.validity} · ${currentPlan.calls} calls</span>
+    </div>
+    <p style="margin:14px 0 8px;font-weight:600;">Choose a Recharge Plan:</p>
+    <div class="recharge-plans-grid">
+      ${plans.map(p => `
+        <div class="recharge-plan-card ${p.id === currentPlan.id ? 'current' : ''}" onclick="selectRechargePlan(this, '${p.id}', ${p.price}, '${p.name.replace(/'/g,"\\'")}')">
+          <div class="rp-price">₹${p.price}</div>
+          <div class="rp-name">${p.name.split('–')[1] || p.name}</div>
+          <div class="rp-data">${p.data}</div>
+          <div class="rp-validity">${p.validity}</div>
+          ${p.description ? `<div class="rp-desc">${p.description}</div>` : ''}
+          ${p.popular ? '<span class="rp-badge">⭐ Popular</span>' : ''}
+          ${p.id === currentPlan.id ? '<span class="rp-badge current-badge">✓ Current</span>' : ''}
+        </div>`).join('')}
+    </div>`;
+}
+
+function selectRechargePlan(card, planId, amount, planName) {
+  document.querySelectorAll('.recharge-plan-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  const summary = document.getElementById('rechargeSummary');
+  const number  = document.getElementById('rechargeNumber').value.trim();
+  const opSel   = document.getElementById('operatorSelect');
+  const opName  = opSel ? opSel.options[opSel.selectedIndex]?.dataset?.name || '' : '';
+  summary.style.display = 'block';
+  summary.innerHTML = `
+    <div class="recharge-summary-box">
+      <h4>📋 Recharge Summary</h4>
+      <div class="summary-row"><span>Number</span><strong>${number}</strong></div>
+      <div class="summary-row"><span>Operator</span><strong>${opName}</strong></div>
+      <div class="summary-row"><span>Plan</span><strong>${planName}</strong></div>
+      <div class="summary-row"><span>Amount</span><strong class="price-highlight">₹${amount}</strong></div>
+      <button class="btn btn-primary btn-full" style="margin-top:14px;"
+        onclick="confirmRecharge('${planId}', ${amount}, '${planName.replace(/'/g,"\\'")}', '${number}', '${opName}')">
+        <i class="fas fa-bolt"></i> Recharge Now ₹${amount}
+      </button>
+    </div>`;
+  summary.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function confirmRecharge(planId, amount, planName, number, operator) {
+  if (!confirm(`Recharge ₹${amount} for ${number} (${operator})?`)) return;
+  try {
+    const res  = await fetch('/api/payment/recharge', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number, operator, plan_id: planId, amount, service: selectedRechargeService })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`✅ ${data.message} Ref: ${data.transaction_id}`, 'success');
+      document.getElementById('rechargeSummary').innerHTML = `
+        <div class="recharge-success">
+          <div style="font-size:48px;text-align:center;">✅</div>
+          <h3 style="text-align:center;color:var(--success);">Recharge Successful!</h3>
+          <p style="text-align:center;">₹${amount} recharged to <strong>${number}</strong></p>
+          <p style="text-align:center;color:var(--gray);font-size:13px;">Transaction ID: ${data.transaction_id}</p>
+          <button class="btn btn-outline-primary btn-full" style="margin-top:12px;" onclick="initPayBill()">New Recharge</button>
+        </div>`;
+      loadTransactions();
+    } else {
+      showToast(data.error || 'Recharge failed', 'error');
+    }
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+async function confirmManualRecharge() {
+  const number   = document.getElementById('rechargeNumber').value.trim();
+  const amount   = parseFloat(document.getElementById('manualAmount').value);
+  const opSel    = document.getElementById('operatorSelect');
+  const operator = opSel ? opSel.options[opSel.selectedIndex]?.dataset?.name || opSel.value : '';
+  if (!number) { showToast('Enter account/consumer number', 'error'); return; }
+  if (!amount || amount < 10) { showToast('Enter a valid amount (min ₹10)', 'error'); return; }
+  if (!operator) { showToast('Select an operator', 'error'); return; }
+  if (!confirm(`Pay ₹${amount} for ${number} (${operator})?`)) return;
+  try {
+    const res  = await fetch('/api/payment/recharge', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number, operator, plan_id: '', amount, service: selectedRechargeService })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast(`✅ Payment successful! Ref: ${data.transaction_id}`, 'success');
+      document.getElementById('manualAmount').value = '';
+      loadTransactions();
+    } else { showToast(data.error || 'Payment failed', 'error'); }
+  } catch(e) { showToast('Connection error', 'error'); }
+}
+
+async function loadTransactions() {
+  try {
+    const txns = await apiFetch('/api/payment/transactions');
+    const el   = document.getElementById('txnList');
+    if (!el) return;
+    if (!txns || !txns.length) {
+      el.innerHTML = '<p style="color:var(--gray);text-align:center;padding:20px;">No transactions yet</p>';
+      return;
+    }
+    el.innerHTML = txns.map(t => `
+      <div class="txn-item">
+        <div>
+          <strong>${t.operator}</strong> — ${t.number}
+          <div style="font-size:12px;color:var(--gray);">${new Date(t.timestamp).toLocaleString()} · ${t.service}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="txn-status-ok">₹${t.amount}</div>
+          <div style="font-size:11px;color:var(--gray);">${t.transaction_id}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { console.error(e); }
+}
+
+// ════════════════════════════════════════════
+//  PLANS — mobile number lookup
+// ════════════════════════════════════════════
+
+async function lookupMobilePlan() {
+  const number = document.getElementById('planLookupNumber').value.trim().replace(/\D/g,'');
+  if (number.length !== 10) { showToast('Enter a valid 10-digit mobile number', 'error'); return; }
+  const btn = document.getElementById('planLookupBtn');
+  setLoading(btn, 'Looking up...');
+  try {
+    const res  = await fetch('/api/payment/my-plan', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ number })
+    });
+    const data = await res.json();
+    if (data.error) { showToast(data.error, 'error'); return; }
+    renderMobilePlanResult(data);
+  } catch(e) { showToast('Lookup failed', 'error'); }
+  resetLoading(btn, '<i class="fas fa-search"></i> Check Plan');
+}
+
+function renderMobilePlanResult(data) {
+  const area = document.getElementById('mobilePlanResult');
+  const cp   = data.current_plan;
+  area.innerHTML = `
+    <div class="mobile-plan-result">
+      <div class="current-plan-banner">
+        <div>
+          <div class="operator-badge">${data.operator}</div>
+          <h3>${cp.name}</h3>
+          <p>${cp.description}</p>
+        </div>
+        <div class="current-plan-stats">
+          <div><i class="fas fa-database"></i> ${cp.data}</div>
+          <div><i class="fas fa-phone"></i> ${cp.calls}</div>
+          <div><i class="fas fa-calendar"></i> ${cp.validity}</div>
+        </div>
+      </div>
+      <h4 style="margin:20px 0 12px;"><i class="fas fa-exchange-alt"></i> Switch to Another Plan</h4>
+      <div class="alt-plans-grid">
+        ${data.other_plans.map(p => `
+          <div class="alt-plan-card ${p.popular ? 'popular' : ''}">
+            ${p.popular ? '<div class="plan-badge">⭐ Popular</div>' : ''}
+            <div class="alt-plan-price">₹${p.price}</div>
+            <div class="alt-plan-meta">${p.validity}</div>
+            <div class="alt-plan-data">${p.data}</div>
+            <div class="alt-plan-desc">${p.description}</div>
+            <button class="btn btn-primary btn-full btn-sm" style="margin-top:10px;"
+              onclick="switchToExternalPlan('${data.number}','${data.operator}','${p.id}',${p.price},'${p.name.replace(/'/g,"\\'")}')">
+              Recharge ₹${p.price}
+            </button>
+          </div>`).join('')}
+      </div>
+    </div>`;
+  area.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function switchToExternalPlan(number, operator, planId, price, planName) {
+  if (!confirm(`Recharge ${number} (${operator}) with ${planName} for ₹${price}?`)) return;
+  fetch('/api/payment/recharge', {
+    method: 'POST', credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ number, operator, plan_id: planId, amount: price, service: 'mobile' })
+  }).then(r => r.json()).then(data => {
+    if (data.success) {
+      showToast(`✅ Recharged! Ref: ${data.transaction_id}`, 'success');
+      document.getElementById('mobilePlanResult').innerHTML = `
+        <div class="recharge-success" style="text-align:center;padding:30px;">
+          <div style="font-size:48px;">✅</div>
+          <h3 style="color:var(--success);">Plan Changed!</h3>
+          <p>${planName} activated on ${number}</p>
+          <p style="color:var(--gray);font-size:13px;">Ref: ${data.transaction_id}</p>
+          <button class="btn btn-outline-primary" style="margin-top:12px;" onclick="lookupMobilePlan()">Check Again</button>
+        </div>`;
+    } else { showToast(data.error || 'Failed', 'error'); }
+  }).catch(() => showToast('Error', 'error'));
+}
 
 // ════════════════════════════════════════════
 //  AI TUTOR

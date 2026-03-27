@@ -26,7 +26,7 @@ db = SQLAlchemy(app)
 
 # ── Quiz imports ───────────────────────────────────────
 from quiz_engine import get_questions, validate_answer, get_stats as quiz_stats
-from llm_service import generate_explanation, tutor_chat, is_llm_available
+from llm_service import generate_explanation, generate_quiz_questions, tutor_chat, is_llm_available
 from vector_db   import init_vector_db, retrieve_all, get_stats as db_stats
 
 with app.app_context():
@@ -348,6 +348,22 @@ def get_notifications():
 def quiz_questions():
     difficulty = request.args.get('difficulty', 'all')
     count      = request.args.get('count', 8, type=int)
+    source     = request.args.get('source', 'static')   # 'static' or 'ai'
+    topic      = request.args.get('topic', 'Indian telecom plans')
+
+    if source == 'ai':
+        ai_qs = generate_quiz_questions(topic, count)
+        if ai_qs:
+            # Strip correct answer for client (same format as static)
+            return jsonify([{
+                'id':         q['id'],
+                'question':   q['question'],
+                'options':    q['options'],
+                'difficulty': q.get('difficulty', 'medium'),
+                'topic':      q.get('topic', topic),
+                '_ai':        True,
+            } for q in ai_qs])
+        # Fall back to static if AI fails
     return jsonify(get_questions(difficulty, count))
 
 
@@ -359,6 +375,32 @@ def quiz_submit():
     qid      = data.get('question_id', '').strip()
     user_ans = data.get('answer', '').strip().upper()
 
+    # AI-generated question — full data sent from client
+    if data.get('_ai') or qid.startswith('ai_'):
+        q_data      = data.get('question_data', {})
+        correct_key = q_data.get('correct', '').upper()
+        options     = q_data.get('options', {})
+        is_correct  = user_ans == correct_key
+        rag_query   = q_data.get('rag_query', q_data.get('topic', ''))
+        rag_context = retrieve_all(rag_query)
+        explanation = generate_explanation(
+            question_text=q_data.get('question',''), options=options,
+            user_key=user_ans, correct_key=correct_key,
+            correct_text=options.get(correct_key,''), user_text=options.get(user_ans,''),
+            is_correct=is_correct, topic=q_data.get('topic','General'),
+            difficulty=q_data.get('difficulty','medium'), rag_context=rag_context,
+        )
+        return jsonify({
+            'is_correct':   is_correct,
+            'correct_key':  correct_key,
+            'correct_text': options.get(correct_key,''),
+            'user_key':     user_ans,
+            'explanation':  explanation,
+            'topic':        q_data.get('topic','General'),
+            'difficulty':   q_data.get('difficulty','medium'),
+        })
+
+    # Static question bank
     result = validate_answer(qid, user_ans)
     if 'error' in result:
         return jsonify(result), 400
@@ -419,8 +461,157 @@ def quiz_chat():
 # ════════════════════════════════════════════════════════
 
 @app.route('/health')
+@app.route('/api/health')
 def health():
-    return jsonify({'status':'healthy','version':'3.0.0','service':'Telecomm Intelligence Platform'})
+    return jsonify({'status':'healthy','version':'3.0.0','llm': is_llm_available(),'service':'Telecomm Intelligence Platform'})
+
+
+# ════════════════════════════════════════════════════════
+#  PAYMENT / RECHARGE  (protected)
+# ════════════════════════════════════════════════════════
+
+# Simulated operator data per service type
+OPERATORS = {
+    'mobile':    ['Jio','Airtel','Vi (Vodafone Idea)','BSNL','MTNL'],
+    'dth':       ['Tata Play','Dish TV','Sun Direct','Airtel Digital TV','d2h'],
+    'broadband': ['JioFiber','Airtel Xstream','ACT Fibernet','BSNL Broadband','Hathway'],
+    'postpaid':  ['Jio','Airtel','Vi (Vodafone Idea)','BSNL'],
+    'electricity':['MSEDCL','BESCOM','TSSPDCL','TNEB','UPPCL','CESC','BRPL','BYPL'],
+    'gas':       ['Indraprastha Gas','MGL','Gujarat Gas','Adani Gas','GAIL'],
+    'water':     ['Municipal Corporation','Delhi Jal Board','BWSSB','Chennai Metro Water'],
+    'landline':  ['BSNL','MTNL','Airtel'],
+}
+
+# Simulated mobile-number → operator+plan lookup
+MOBILE_OPERATOR_MAP = {
+    '9': 'Jio', '8': 'Airtel', '7': 'Vi (Vodafone Idea)', '6': 'BSNL',
+}
+
+OPERATOR_PLANS = {
+    'Jio': [
+        {'id':'j1','name':'₹155 – 24 Days','price':155,'data':'1.5GB/day','validity':'24 days','calls':'Unlimited','description':'Budget daily plan'},
+        {'id':'j2','name':'₹209 – 28 Days','price':209,'data':'2GB/day','validity':'28 days','calls':'Unlimited','description':'With Netflix Mobile (28 days)','popular':True},
+        {'id':'j3','name':'₹299 – 28 Days','price':299,'data':'3GB/day','validity':'28 days','calls':'Unlimited','description':'With Netflix Basic (28 days)'},
+        {'id':'j4','name':'₹349 – 28 Days','price':349,'data':'Unlimited 5G','validity':'28 days','calls':'Unlimited','description':'True 5G Unlimited Data'},
+        {'id':'j5','name':'₹533 – 84 Days','price':533,'data':'2GB/day','validity':'84 days','calls':'Unlimited','description':'3-month value plan'},
+        {'id':'j6','name':'₹601 – 84 Days','price':601,'data':'3GB/day','validity':'84 days','calls':'Unlimited','description':'With Netflix (84 days)'},
+        {'id':'j7','name':'₹2999 – 365 Days','price':2999,'data':'2.5GB/day','validity':'365 days','calls':'Unlimited','description':'Annual plan'},
+    ],
+    'Airtel': [
+        {'id':'a1','name':'₹179 – 28 Days','price':179,'data':'1.5GB/day','validity':'28 days','calls':'Unlimited','description':'Entry level plan'},
+        {'id':'a2','name':'₹239 – 28 Days','price':239,'data':'2GB/day','validity':'28 days','calls':'Unlimited','description':'Regular monthly plan','popular':True},
+        {'id':'a3','name':'₹329 – 28 Days','price':329,'data':'3GB/day','validity':'28 days','calls':'Unlimited','description':'With Amazon Prime (30 days)'},
+        {'id':'a4','name':'₹409 – 28 Days','price':409,'data':'Unlimited 5G','validity':'28 days','calls':'Unlimited','description':'5G Unlimited + Amazon Prime'},
+        {'id':'a5','name':'₹569 – 84 Days','price':569,'data':'2GB/day','validity':'84 days','calls':'Unlimited','description':'Quarterly plan'},
+        {'id':'a6','name':'₹3359 – 365 Days','price':3359,'data':'2.5GB/day','validity':'365 days','calls':'Unlimited','description':'Annual plan'},
+    ],
+    'Vi (Vodafone Idea)': [
+        {'id':'v1','name':'₹179 – 28 Days','price':179,'data':'1.5GB/day','validity':'28 days','calls':'Unlimited','description':'Weekend data rollover'},
+        {'id':'v2','name':'₹239 – 28 Days','price':239,'data':'2GB/day','validity':'28 days','calls':'Unlimited','description':'Binge All Night free','popular':True},
+        {'id':'v3','name':'₹299 – 28 Days','price':299,'data':'3GB/day','validity':'28 days','calls':'Unlimited','description':'With Hotstar (30 days)'},
+        {'id':'v4','name':'₹359 – 28 Days','price':359,'data':'2.5GB/day','validity':'28 days','calls':'Unlimited','description':'5G Ready plan'},
+        {'id':'v5','name':'₹553 – 84 Days','price':553,'data':'1.5GB/day','validity':'84 days','calls':'Unlimited','description':'Quarterly value'},
+        {'id':'v6','name':'₹2899 – 365 Days','price':2899,'data':'1.5GB/day','validity':'365 days','calls':'Unlimited','description':'Annual plan'},
+    ],
+    'BSNL': [
+        {'id':'b1','name':'₹94 – 28 Days','price':94,'data':'2GB/day','validity':'28 days','calls':'Unlimited','description':'Most affordable plan'},
+        {'id':'b2','name':'₹197 – 54 Days','price':197,'data':'2GB/day','validity':'54 days','calls':'Unlimited','description':'Best value per day','popular':True},
+        {'id':'b3','name':'₹247 – 30 Days','price':247,'data':'3GB/day','validity':'30 days','calls':'Unlimited','description':'High data plan'},
+        {'id':'b4','name':'₹398 – 81 Days','price':398,'data':'3GB/day','validity':'81 days','calls':'Unlimited','description':'Quarterly plan'},
+        {'id':'b5','name':'₹1515 – 365 Days','price':1515,'data':'2GB/day','validity':'365 days','calls':'Unlimited','description':'Annual plan'},
+    ],
+}
+
+# Simulated transaction store (in-memory; replace with DB for production)
+_transactions = []
+
+@app.route('/api/payment/operators')
+@login_required
+def payment_operators():
+    service = request.args.get('service', 'mobile').lower()
+    ops = OPERATORS.get(service, OPERATORS['mobile'])
+    return jsonify([{'id': o.lower().replace(' ','_').replace('(','').replace(')',''), 'name': o} for o in ops])
+
+
+@app.route('/api/payment/detect', methods=['POST'])
+@login_required
+def detect_operator():
+    """Detect operator from mobile number (simulated)"""
+    data   = request.get_json(force=True)
+    number = str(data.get('number', '')).strip().replace('+91','').replace(' ','')
+    if len(number) != 10 or not number.isdigit():
+        return jsonify({'error': 'Enter a valid 10-digit mobile number'}), 400
+    # Simulate detection by first digit
+    op = MOBILE_OPERATOR_MAP.get(number[0], 'Airtel')
+    plans = OPERATOR_PLANS.get(op, [])
+    # Pick a "current plan" based on last digit of number (simulation)
+    current_idx = int(number[-1]) % len(plans)
+    current_plan = plans[current_idx]
+    return jsonify({
+        'operator':     op,
+        'number':       number,
+        'current_plan': current_plan,
+        'all_plans':    plans,
+    })
+
+
+@app.route('/api/payment/my-plan', methods=['POST'])
+@login_required
+def my_mobile_plan():
+    """Look up current plan + alternatives for a mobile number"""
+    data   = request.get_json(force=True)
+    number = str(data.get('number', '')).strip().replace('+91','').replace(' ','')
+    if len(number) != 10 or not number.isdigit():
+        return jsonify({'error': 'Enter a valid 10-digit mobile number'}), 400
+    op = MOBILE_OPERATOR_MAP.get(number[0], 'Airtel')
+    plans = OPERATOR_PLANS.get(op, [])
+    current_idx  = int(number[-1]) % len(plans)
+    current_plan = plans[current_idx]
+    other_plans  = [p for i, p in enumerate(plans) if i != current_idx]
+    return jsonify({
+        'operator':     op,
+        'number':       number,
+        'current_plan': current_plan,
+        'other_plans':  other_plans,
+    })
+
+
+@app.route('/api/payment/recharge', methods=['POST'])
+@login_required
+def do_recharge():
+    """Process a recharge/payment (simulated)"""
+    user = get_current_user()
+    data = request.get_json(force=True)
+    number   = str(data.get('number', '')).strip()
+    operator = data.get('operator', '')
+    plan_id  = data.get('plan_id', '')
+    amount   = data.get('amount', 0)
+    service  = data.get('service', 'mobile')
+
+    if not number or not operator or not amount:
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    txn = {
+        'id':          f'TXN{random.randint(1000000, 9999999)}',
+        'user_id':     user.id,
+        'number':      number,
+        'operator':    operator,
+        'plan_id':     plan_id,
+        'amount':      amount,
+        'service':     service,
+        'status':      'success',
+        'timestamp':   datetime.now().isoformat(),
+    }
+    _transactions.append(txn)
+    return jsonify({'success': True, 'transaction_id': txn['id'], 'message': f'Recharge of ₹{amount} successful!', 'transaction': txn})
+
+
+@app.route('/api/payment/transactions')
+@login_required
+def get_transactions():
+    user = get_current_user()
+    user_txns = [t for t in _transactions if t['user_id'] == user.id]
+    return jsonify(sorted(user_txns, key=lambda x: x['timestamp'], reverse=True)[:20])
 
 @app.errorhandler(404)
 def not_found(e): return jsonify({'error': 'Not found'}), 404
