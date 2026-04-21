@@ -3,650 +3,684 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Telecomm Intelligence Platform</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>TeleBot — AI Telecomm Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="app">
 
-<div class="animated-bg">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-logo-wrap">
+      <div class="sb-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
+      </div>
+      <div><div class="sb-name">TeleBot</div><div class="sb-sub">AI Platform</div></div>
+    </div>
+    <div class="sb-section-label">MAIN</div>
+    <button class="sb-item active" id="nb-home" onclick="nav('home',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Dashboard</span>
+    </button>
+    <button class="sb-item" id="nb-payment" onclick="nav('payment',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      <span>Pay &amp; Recharge</span><span class="sb-badge new">NEW</span>
+    </button>
+    <button class="sb-item" id="nb-myplan" onclick="nav('myplan',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+      <span>My Plan</span><span class="sb-badge new">NEW</span>
+    </button>
+    <div class="sb-section-label">AI FEATURES</div>
+    <button class="sb-item" id="nb-quiz" onclick="nav('quiz',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      <span>AI Quiz</span><span class="sb-badge ai">AI</span>
+    </button>
+    <button class="sb-item" id="nb-tutor" onclick="nav('tutor',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+      <span>AI Tutor</span><span class="sb-badge ai">AI</span>
+    </button>
+    <button class="sb-item" id="nb-triage" onclick="nav('triage',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span>Support Triage</span><span class="sb-badge ai">AGENT</span>
+    </button>
+    <div class="sb-section-label">KNOWLEDGE</div>
+    <button class="sb-item" id="nb-plans" onclick="nav('plans',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/></svg>
+      <span>Plan Explorer</span>
+    </button>
+    <button class="sb-item" id="nb-vdb" onclick="nav('vdb',this)">
+      <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+      <span>Vector DB</span>
+    </button>
+    <div class="sb-footer">
+      <div class="sb-status"><div class="status-dot" id="sys-led"></div><span id="sys-txt">Connecting…</span></div>
+      <div class="sb-score-row"><span>Score</span><span class="sb-score-val" id="sb-score">0</span></div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="menu-btn" id="menu-btn" onclick="toggleSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <nav class="breadcrumb">
+          <span class="bc-root">TeleBot</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          <span class="bc-cur" id="tb-page">Dashboard</span>
+        </nav>
+      </div>
+      <div class="tb-right">
+        <div class="tb-chip" id="llm-pill"><div class="chip-pulse"></div><span id="ai-txt">Checking…</span></div>
+        <div class="tb-score">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="#f59e0b" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span id="tb-score">0</span><span class="pts-label">pts</span>
+        </div>
+        <div class="tb-user" id="tb-user" style="display:none">
+          <div class="tb-avatar" id="tb-avatar">?</div>
+          <span class="tb-username" id="tb-username"></span>
+          <button class="tb-logout" onclick="doLogout()" title="Sign out">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ══ HOME ══ -->
+    <div class="page active" id="pg-home">
+      <div class="page-scroll">
+        <div class="hero-banner">
+          <div class="hero-bg-circles"><div class="hc hc1"></div><div class="hc hc2"></div><div class="hc hc3"></div></div>
+          <div class="hero-content">
+            <div class="hero-pill"><span class="hp-dot"></span>Gemini 2.5 Flash · RAG · ChromaDB</div>
+            <h1 class="hero-title">India's Smartest<br><span class="hero-accent">Telecom Platform</span></h1>
+            <p class="hero-desc">Recharge instantly. Compare plans. Learn with AI. Everything telecom in one place.</p>
+            <div class="hero-actions">
+              <button class="ha-btn primary" onclick="nav('payment',document.getElementById('nb-payment'))">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                Pay &amp; Recharge
+              </button>
+              <button class="ha-btn secondary" onclick="nav('myplan',document.getElementById('nb-myplan'))">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="14" height="20" x="5" y="2" rx="2"/><path d="M12 18h.01"/></svg>
+                Check My Plan
+              </button>
+              <button class="ha-btn ghost" onclick="nav('tutor',document.getElementById('nb-tutor'))">Ask AI Tutor →</button>
+            </div>
+          </div>
+          <div class="hero-art">
+            <div class="phone-mock">
+              <div class="pm-screen">
+                <div class="pm-op">🟦 Jio Prepaid</div>
+                <div class="pm-balance">₹209</div>
+                <div class="pm-plan">2GB/day · 28 days</div>
+                <div class="pm-bar-wrap">
+                  <div class="pm-bar-label">Data used today</div>
+                  <div class="pm-bar"><div class="pm-bar-fill" style="width:62%"></div></div>
+                  <div class="pm-bar-val">1.24 GB / 2 GB</div>
+                </div>
+                <div class="pm-days">⏱ 18 days remaining</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header"><h2 class="section-title">Quick Recharge</h2><button class="section-link" onclick="nav('payment',document.getElementById('nb-payment'))">View all →</button></div>
+          <div class="quick-grid">
+            <button class="quick-card" onclick="nav('payment',document.getElementById('nb-payment'));setTimeout(()=>selectService('mobile',document.querySelector('[data-svc=mobile]')),300)"><div class="qc-ico" style="background:linear-gradient(135deg,#6366f1,#818cf8)">📱</div><span class="qc-label">Mobile</span></button>
+            <button class="quick-card" onclick="nav('payment',document.getElementById('nb-payment'));setTimeout(()=>selectService('dth',document.querySelector('[data-svc=dth]')),300)"><div class="qc-ico" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">📺</div><span class="qc-label">DTH</span></button>
+            <button class="quick-card" onclick="nav('payment',document.getElementById('nb-payment'));setTimeout(()=>selectService('broadband',document.querySelector('[data-svc=broadband]')),300)"><div class="qc-ico" style="background:linear-gradient(135deg,#0891b2,#06b6d4)">🌐</div><span class="qc-label">Broadband</span></button>
+            <button class="quick-card" onclick="nav('payment',document.getElementById('nb-payment'));setTimeout(()=>selectService('electricity',document.querySelector('[data-svc=electricity]')),300)"><div class="qc-ico" style="background:linear-gradient(135deg,#d97706,#f59e0b)">⚡</div><span class="qc-label">Electricity</span></button>
+            <button class="quick-card" onclick="nav('payment',document.getElementById('nb-payment'));setTimeout(()=>selectService('gas',document.querySelector('[data-svc=gas]')),300)"><div class="qc-ico" style="background:linear-gradient(135deg,#dc2626,#f43f5e)">🔥</div><span class="qc-label">Gas</span></button>
+            <button class="quick-card" onclick="nav('payment',document.getElementById('nb-payment'));setTimeout(()=>selectService('water',document.querySelector('[data-svc=water]')),300)"><div class="qc-ico" style="background:linear-gradient(135deg,#0284c7,#38bdf8)">💧</div><span class="qc-label">Water</span></button>
+            <button class="quick-card" onclick="nav('myplan',document.getElementById('nb-myplan'))"><div class="qc-ico" style="background:linear-gradient(135deg,#059669,#10b981)">🔄</div><span class="qc-label">My Plans</span></button>
+            <button class="quick-card" onclick="nav('quiz',document.getElementById('nb-quiz'))"><div class="qc-ico" style="background:linear-gradient(135deg,#db2777,#ec4899)">🎯</div><span class="qc-label">AI Quiz</span></button>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header"><h2 class="section-title">Browse by Operator</h2><button class="section-link" onclick="nav('myplan',document.getElementById('nb-myplan'))">See plans →</button></div>
+          <div class="op-cards-row">
+            <div class="op-card jio" onclick="nav('myplan',document.getElementById('nb-myplan'));setTimeout(()=>previewOperator('Jio'),300)"><div class="opc-logo">🟦</div><div class="opc-name">Jio</div><div class="opc-plans">8 plans from ₹155</div><div class="opc-tag">5G · NB-IoT · VoLTE</div></div>
+            <div class="op-card airtel" onclick="nav('myplan',document.getElementById('nb-myplan'));setTimeout(()=>previewOperator('Airtel'),300)"><div class="opc-logo">🔴</div><div class="opc-name">Airtel</div><div class="opc-plans">8 plans from ₹99</div><div class="opc-tag">5G Ultra · Thanks App</div></div>
+            <div class="op-card vi" onclick="nav('myplan',document.getElementById('nb-myplan'));setTimeout(()=>previewOperator('Vi'),300)"><div class="opc-logo">🟣</div><div class="opc-name">Vi</div><div class="opc-plans">7 plans from ₹99</div><div class="opc-tag">Hero Unlimited · Binge</div></div>
+            <div class="op-card bsnl" onclick="nav('myplan',document.getElementById('nb-myplan'));setTimeout(()=>previewOperator('BSNL'),300)"><div class="opc-logo">🟡</div><div class="opc-name">BSNL</div><div class="opc-plans">5 plans from ₹94</div><div class="opc-tag">Budget · Wide Coverage</div></div>
+          </div>
+        </div>
+
+        <div class="section-block">
+          <div class="section-header"><h2 class="section-title">AI-Powered Features</h2></div>
+          <div class="feature-cards">
+            <div class="feat-card" onclick="nav('quiz',document.getElementById('nb-quiz'))"><div class="fc-icon">🎯</div><div class="fc-content"><div class="fc-title">AI Quiz Generator</div><div class="fc-desc">Gemini generates fresh questions every session. Detailed explanations — why right and why wrong.</div></div><svg class="fc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="feat-card" onclick="nav('tutor',document.getElementById('nb-tutor'))"><div class="fc-icon">🤖</div><div class="fc-content"><div class="fc-title">AI Telecom Tutor</div><div class="fc-desc">Ask "Give me all Jio plans" or "Best 5G plan under ₹350" — get instant accurate answers.</div></div><svg class="fc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+            <div class="feat-card" onclick="nav('myplan',document.getElementById('nb-myplan'))"><div class="fc-icon">📱</div><div class="fc-content"><div class="fc-title">Smart Plan Detection</div><div class="fc-desc">Enter any number → auto-detect operator → see current plan → switch to a better one instantly.</div></div><svg class="fc-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PAYMENT ══ -->
+    <div class="page" id="pg-payment">
+      <div class="page-scroll">
+        <div class="page-header"><h1 class="page-h1">Pay &amp; Recharge</h1><p class="page-sub">Quick &amp; easy recharge for all your services</p></div>
+        <div class="svc-row">
+          <button class="svc-btn active" onclick="selectService('mobile',this)" data-svc="mobile"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#6366f1,#818cf8)">📱</span><span>Mobile</span></button>
+          <button class="svc-btn" onclick="selectService('dth',this)" data-svc="dth"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">📺</span><span>DTH</span></button>
+          <button class="svc-btn" onclick="selectService('broadband',this)" data-svc="broadband"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#0891b2,#06b6d4)">🌐</span><span>Broadband</span></button>
+          <button class="svc-btn" onclick="selectService('postpaid',this)" data-svc="postpaid"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#059669,#10b981)">💳</span><span>Postpaid</span></button>
+          <button class="svc-btn" onclick="selectService('electricity',this)" data-svc="electricity"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#d97706,#f59e0b)">⚡</span><span>Electricity</span></button>
+          <button class="svc-btn" onclick="selectService('gas',this)" data-svc="gas"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#dc2626,#f43f5e)">🔥</span><span>Gas</span></button>
+          <button class="svc-btn" onclick="selectService('water',this)" data-svc="water"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#0284c7,#38bdf8)">💧</span><span>Water</span></button>
+          <button class="svc-btn" onclick="selectService('landline',this)" data-svc="landline"><span class="svc-btn-ico" style="background:linear-gradient(135deg,#475569,#64748b)">☎️</span><span>Landline</span></button>
+        </div>
+        <div class="pay-body">
+          <div class="pay-left">
+            <div class="card">
+              <div class="card-title" id="pay-title">Mobile Recharge</div>
+              <div class="field-group">
+                <label class="field-label" id="num-label">Mobile Number</label>
+                <div class="phone-field">
+                  <div class="pf-prefix">🇮🇳 +91</div>
+                  <input type="tel" id="pay-number" class="pf-input" placeholder="Enter 10-digit number" maxlength="10" oninput="onNumberInput(this.value)">
+                  <div class="pf-detected" id="op-badge" style="display:none"><span id="op-badge-logo"></span><span id="op-badge-name" style="font-weight:700;font-size:12px"></span></div>
+                </div>
+                <div class="field-hint" id="detect-hint" style="display:none"><span id="detect-msg"></span></div>
+              </div>
+              <div id="op-select-grp" style="display:none">
+                <label class="field-label">Select Operator / Provider</label>
+                <div class="op-pick-grid" id="op-grid"></div>
+              </div>
+              <div class="toggle-row" id="plan-type-row">
+                <button class="toggle-btn active" onclick="setPlanType('prepaid',this)">Prepaid</button>
+                <button class="toggle-btn" onclick="setPlanType('postpaid',this)">Postpaid</button>
+              </div>
+              <div class="field-group">
+                <div class="field-label-row">
+                  <label class="field-label">Select Plan</label>
+                  <input type="text" id="plan-search-inp" class="plan-search" placeholder="Search…" oninput="filterPlanListPayment(this.value)" style="display:none">
+                </div>
+                <div class="plan-cats" id="plan-cats" style="display:none">
+                  <button class="pc active" onclick="filterPayByCat('all',this)">All</button>
+                  <button class="pc" onclick="filterPayByCat('popular',this)">🔥 Popular</button>
+                  <button class="pc" onclick="filterPayByCat('5g',this)">⚡ 5G</button>
+                  <button class="pc" onclick="filterPayByCat('budget',this)">💰 Budget</button>
+                  <button class="pc" onclick="filterPayByCat('long',this)">📅 Long</button>
+                </div>
+                <div class="plan-scroll" id="plan-list-wrap">
+                  <div class="plan-empty-state"><div class="pes-ico">📋</div><div class="pes-txt">Select an operator to see plans</div></div>
+                </div>
+              </div>
+              <div class="plan-summary-bar" id="selected-plan-bar" style="display:none">
+                <div class="psb-left"><div class="psb-name" id="spb-name"></div><div class="psb-meta" id="spb-meta"></div></div>
+                <div class="psb-price" id="spb-price"></div>
+              </div>
+              <button class="pay-cta" id="pay-btn" onclick="proceedPayment()" disabled>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+                Proceed to Pay
+              </button>
+            </div>
+          </div>
+          <div class="pay-right">
+            <div class="card">
+              <div class="card-title-row"><div class="card-title">Recent Transactions</div><button class="refresh-btn" onclick="loadTransactions()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></button></div>
+              <div id="txn-list"><div class="txn-loading">Loading…</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MY PLAN ══ -->
+    <div class="page" id="pg-myplan">
+      <div class="page-scroll">
+        <div class="myplan-search-hero">
+          <div class="msh-content">
+            <h1 class="msh-title">Find Your Plan</h1>
+            <p class="msh-sub">Enter any mobile number to see your active plan and explore better options</p>
+            <div class="number-search-bar">
+              <div class="nsb-prefix">🇮🇳 +91</div>
+              <input type="tel" id="myplan-number" class="nsb-input" placeholder="Enter 10-digit mobile number" maxlength="10">
+              <button class="nsb-btn" id="myplan-btn" onclick="detectMyPlan()">Check Plans <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+            </div>
+            <div class="op-shortcut-row">
+              <span class="osr-label">Browse:</span>
+              <button class="osr-chip" onclick="previewOperator('Jio')">🟦 Jio</button>
+              <button class="osr-chip" onclick="previewOperator('Airtel')">🔴 Airtel</button>
+              <button class="osr-chip" onclick="previewOperator('Vi')">🟣 Vi</button>
+              <button class="osr-chip" onclick="previewOperator('BSNL')">🟡 BSNL</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="myplan-result" style="display:none">
+          <div class="detected-bar" id="op-banner">
+            <div class="db-left"><div class="db-logo" id="op-banner-logo"></div><div><div class="db-name" id="op-banner-name"></div><div class="db-num" id="op-banner-num"></div></div></div>
+            <div class="db-right">
+              <button class="db-change" onclick="resetMyPlan()">Change Number</button>
+              <button class="btn-recharge" onclick="goRechargeFromPlan()">Recharge Now</button>
+            </div>
+          </div>
+
+          <div class="current-plan-section">
+            <div class="cps-left"><div class="section-label-sm">YOUR CURRENT PLAN</div><div id="current-plan-card" class="current-plan-wrap"></div></div>
+            <div class="cps-right">
+              <div class="section-label-sm">USAGE THIS CYCLE</div>
+              <div class="usage-card">
+                <div class="usage-row"><div class="ur-icon">📶</div><div class="ur-info"><div class="ur-label">Data Used</div><div class="ur-bar"><div class="ur-fill" style="width:62%;background:linear-gradient(90deg,#6366f1,#06b6d4)"></div></div><div class="ur-vals"><span id="data-used">1.24 GB</span> of <span id="data-total">2 GB/day</span></div></div></div>
+                <div class="usage-row"><div class="ur-icon">📞</div><div class="ur-info"><div class="ur-label">Calls</div><div class="ur-bar"><div class="ur-fill" style="width:40%;background:linear-gradient(90deg,#10b981,#34d399)"></div></div><div class="ur-vals">Unlimited</div></div></div>
+                <div class="usage-row"><div class="ur-icon">📅</div><div class="ur-info"><div class="ur-label">Validity</div><div class="ur-bar"><div class="ur-fill" id="valid-fill" style="width:71%;background:linear-gradient(90deg,#f59e0b,#fcd34d)"></div></div><div class="ur-vals"><span id="days-left">20 days left</span></div></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-header">
+              <h2 class="section-title">Upgrade or Switch Plan</h2>
+              <div class="plan-filters">
+                <button class="pf-btn active" onclick="filterAltPlans('all',this)">All</button>
+                <button class="pf-btn" onclick="filterAltPlans('budget',this)">💰 Budget</button>
+                <button class="pf-btn" onclick="filterAltPlans('popular',this)">🔥 Popular</button>
+                <button class="pf-btn" onclick="filterAltPlans('5g',this)">⚡ 5G</button>
+                <button class="pf-btn" onclick="filterAltPlans('long',this)">📅 Long</button>
+                <button class="pf-btn" onclick="filterAltPlans('annual',this)">🗓️ Annual</button>
+                <button class="pf-btn" onclick="filterAltPlans('postpaid',this)">💳 Postpaid</button>
+              </div>
+            </div>
+            <div class="alt-grid" id="alt-plans-grid"></div>
+          </div>
+        </div>
+
+        <div id="myplan-empty" class="myplan-empty"><div class="me-icon">📡</div><div class="me-title">Detect your mobile plan</div><div class="me-sub">Enter your number above or click an operator to browse all plans</div></div>
+      </div>
+    </div>
+
+    <!-- ══ QUIZ ══ -->
+    <div class="page" id="pg-quiz">
+      <div class="page-scroll">
+        <div class="page-header"><h1 class="page-h1">AI Quiz Mode</h1><p class="page-sub">Fresh questions generated by Gemini · Rich explanations for every answer</p></div>
+        <div class="quiz-wrap">
+          <div class="diff-bar">
+            <button class="diff-btn active" onclick="setDiff('all',this)">All Levels</button>
+            <button class="diff-btn" onclick="setDiff('easy',this)">Easy</button>
+            <button class="diff-btn" onclick="setDiff('medium',this)">Medium</button>
+            <button class="diff-btn" onclick="setDiff('hard',this)">Hard</button>
+          </div>
+          <div class="quiz-start-card" id="quiz-start">
+            <div class="qsc-glow"></div>
+            <div class="qsc-icon">🤖</div>
+            <h2 class="qsc-title">AI-Powered Telecom Quiz</h2>
+            <p class="qsc-sub">Gemini generates fresh questions every session. Detailed explanations — why right, why wrong.</p>
+            <div class="qsc-tags"><span class="qsc-tag t1">✨ AI Generated</span><span class="qsc-tag t2">5G Technology</span><span class="qsc-tag t3">Operator Plans</span><span class="qsc-tag t4">IoT Protocols</span><span class="qsc-tag t5">NB-IoT / LTE-M</span></div>
+            <button class="qsc-start-btn" onclick="startQuiz()">Generate &amp; Start Quiz</button>
+          </div>
+          <div id="quiz-active" style="display:none">
+            <div class="ai-tag" id="ai-gen-badge" style="display:none"><div class="at-dot"></div>✨ AI Generated</div>
+            <div class="q-progress-row">
+              <span class="qpr-label" id="q-prog-lbl">Q 1 / 8</span>
+              <div class="qpr-track"><div class="qpr-fill" id="prog-fill" style="width:0%"></div></div>
+              <span class="qpr-score" id="q-score-lbl">0 pts</span>
+            </div>
+            <div class="question-card" id="q-card">
+              <div class="qc-meta"><span class="qc-num" id="q-idx">Q01</span><span class="qc-diff easy" id="q-diff-b">EASY</span><span class="qc-topic" id="q-topic-b">TOPIC</span></div>
+              <div class="qc-text" id="q-txt">Loading question…</div>
+              <div class="qc-options" id="options"></div>
+            </div>
+            <div class="explanation-card" id="exp-card" style="display:none">
+              <div class="ec-header th" id="exp-head">✦ AI Explanation</div>
+              <div class="ec-body" id="exp-body"></div>
+            </div>
+            <div class="q-actions"><button class="q-next-btn" id="next-btn" onclick="nextQ()" style="display:none">Next Question →</button></div>
+          </div>
+          <div class="score-card" id="score-screen" style="display:none">
+            <div class="sc-trophy" id="sc-emoji">🎯</div>
+            <div class="sc-pct" id="sc-pct">0%</div>
+            <div class="sc-title" id="sc-title">Done!</div>
+            <div class="sc-sub" id="sc-sub">0 correct out of 8</div>
+            <div class="sc-stats">
+              <div class="sc-stat correct"><div class="sc-stat-val" id="sc-correct">0</div><div class="sc-stat-lbl">Correct</div></div>
+              <div class="sc-stat wrong"><div class="sc-stat-val" id="sc-wrong">0</div><div class="sc-stat-lbl">Wrong</div></div>
+              <div class="sc-stat pts"><div class="sc-stat-val" id="sc-pts">0</div><div class="sc-stat-lbl">Points</div></div>
+            </div>
+            <div class="sc-btns"><button class="sc-btn primary" onclick="resetQuiz()">↺ Play Again</button><button class="sc-btn secondary" onclick="nav('tutor',document.getElementById('nb-tutor'))">Ask AI Tutor</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ AI TUTOR ══ -->
+    <div class="page" id="pg-tutor">
+      <div class="tutor-page">
+        <div class="tutor-header"><div class="th-icon">🤖</div><div><h1 class="th-title">AI Telecom Tutor</h1><p class="th-sub">Ask about any plan, compare operators, or learn telecom concepts</p></div></div>
+        <div class="suggestion-chips" id="sug-row">
+          <button class="sc-chip" onclick="sendSug(this)">Give me all Jio plans</button>
+          <button class="sc-chip" onclick="sendSug(this)">Compare Airtel vs Jio 2GB</button>
+          <button class="sc-chip" onclick="sendSug(this)">Best plan under ₹250</button>
+          <button class="sc-chip" onclick="sendSug(this)">Vi postpaid plans</button>
+          <button class="sc-chip" onclick="sendSug(this)">What is NB-IoT?</button>
+          <button class="sc-chip" onclick="sendSug(this)">Best 5G plan India</button>
+          <button class="sc-chip" onclick="sendSug(this)">BSNL annual plans</button>
+        </div>
+        <div class="chat-messages" id="chat-box">
+          <div class="chat-msg bot">
+            <div class="cm-avatar bot-av">📡</div>
+            <div class="cm-content">
+              <div class="cm-bubble bot-bubble">Hello! I'm <strong>TeleBot</strong> — your AI telecom assistant.<br><br>I know all plans from <strong>Jio, Airtel, Vi &amp; BSNL</strong>. Try: <em>"Give me all Jio plans"</em> or <em>"Best plan under ₹300"</em></div>
+              <div class="cm-time">Just now</div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-composer">
+          <div class="cc-inner">
+            <textarea id="chat-ta" class="cc-input" rows="1" placeholder="Ask about plans, compare operators, learn telecom…"></textarea>
+            <button id="send-btn" class="cc-send" onclick="sendMsg()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+          </div>
+          <div class="cc-hint">Enter to send · Shift+Enter for new line</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ PLAN EXPLORER ══ -->
+    <div class="page" id="pg-plans">
+      <div class="page-scroll">
+        <div class="page-header"><h1 class="page-h1">Plan Explorer</h1><p class="page-sub">All telecom plans — the knowledge base powering AI quiz &amp; tutor</p></div>
+        <div class="search-bar-full">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input class="sbf-input" id="plan-inp" placeholder="Search by name, type, data, feature…" oninput="filterPlans(this.value)">
+          <button class="sbf-clear" onclick="document.getElementById('plan-inp').value='';filterPlans('')">✕</button>
+        </div>
+        <div class="plans-grid" id="plans-grid"></div>
+      </div>
+    </div>
+
+    <!-- ══ VECTOR DB ══ -->
+    <div class="page" id="pg-vdb">
+      <div class="page-scroll">
+        <div class="page-header"><h1 class="page-h1">Vector DB Engine</h1><p class="page-sub">How ChromaDB + MiniLM powers semantic retrieval (RAG)</p></div>
+        <div class="vdb-stats-row">
+          <div class="vdb-stat"><div class="vdb-stat-n" id="vdb-plans">8</div><div class="vdb-stat-l">Plans Indexed</div></div>
+          <div class="vdb-stat"><div class="vdb-stat-n" id="vdb-concepts">11</div><div class="vdb-stat-l">Concepts Indexed</div></div>
+          <div class="vdb-stat"><div class="vdb-stat-n sm" id="vdb-model">MiniLM</div><div class="vdb-stat-l">Embedding Model</div></div>
+          <div class="vdb-stat"><div class="vdb-stat-n sm" id="vdb-metric">cosine</div><div class="vdb-stat-l">Similarity Metric</div></div>
+        </div>
+        <div class="pipeline-card">
+          <div class="pipe-title">RAG Pipeline</div>
+          <div class="pipe-steps">
+            <div class="pipe-step"><div class="ps-ico">📄</div><div class="ps-name">DOCS</div><div class="ps-sub">telecom_docs.txt</div></div>
+            <div class="pipe-arr">›</div>
+            <div class="pipe-step"><div class="ps-ico">🔢</div><div class="ps-name">EMBED</div><div class="ps-sub">MiniLM-L6-v2</div></div>
+            <div class="pipe-arr">›</div>
+            <div class="pipe-step"><div class="ps-ico">🗄️</div><div class="ps-name">CHROMA</div><div class="ps-sub">HNSW cosine</div></div>
+            <div class="pipe-arr">›</div>
+            <div class="pipe-step active"><div class="ps-ico">✦</div><div class="ps-name">GEMINI</div><div class="ps-sub">Grounded answer</div></div>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="cb-header">vector_db.py — Semantic Retrieval</div>
+          <div class="cb-body"><span class="ck">def</span> <span class="cf">retrieve</span>(query: str, n=<span class="cn">2</span>) → str:
+    r = col.<span class="cf">query</span>(query_texts=[query], n_results=n)
+    <span class="ck">return</span> <span class="cs">"\n---\n"</span>.<span class="cf">join</span>(r[<span class="cs">"documents"</span>][<span class="cn">0</span>])
+
+<span class="cc"># "Jio 5G plan" → SmartDaily 5G injected into Gemini context</span>
+<span class="cc"># "NB-IoT battery life" → IoTConnect M2M + concept retrieved</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TRIAGE AGENT ══ -->
+    <div class="page" id="pg-triage">
+      <div class="page-scroll">
+        <div class="page-header">
+          <h1 class="page-h1">Support Triage Agent</h1>
+          <p class="page-sub">AI-powered classification · NER extraction · Auto-draft responses · Ticket management</p>
+        </div>
+
+        <!-- Stats bar -->
+        <div class="triage-stats-bar" id="triage-stats-bar">
+          <div class="tsb-item"><div class="tsb-val" id="ts-total">0</div><div class="tsb-lbl">Total Tickets</div></div>
+          <div class="tsb-item critical"><div class="tsb-val" id="ts-critical">0</div><div class="tsb-lbl">Critical</div></div>
+          <div class="tsb-item high"><div class="tsb-val" id="ts-high">0</div><div class="tsb-lbl">High</div></div>
+          <div class="tsb-item medium"><div class="tsb-val" id="ts-medium">0</div><div class="tsb-lbl">Medium</div></div>
+          <div class="tsb-item low"><div class="tsb-val" id="ts-low">0</div><div class="tsb-lbl">Low</div></div>
+          <div class="tsb-item ai"><div class="tsb-val" id="ts-ai">0</div><div class="tsb-lbl">AI-Powered</div></div>
+          <div class="tsb-item esc"><div class="tsb-val" id="ts-esc">0</div><div class="tsb-lbl">Escalations</div></div>
+        </div>
+
+        <div class="triage-layout">
+
+          <!-- Left: Input panel -->
+          <div class="triage-input-col">
+            <div class="card">
+              <div class="card-title">📨 Analyze Support Message</div>
+
+              <div class="field-group">
+                <label class="field-label">Channel</label>
+                <div class="channel-tabs">
+                  <button class="ch-tab active" onclick="setChannel('chat',this)">💬 Chat</button>
+                  <button class="ch-tab" onclick="setChannel('email',this)">📧 Email</button>
+                  <button class="ch-tab" onclick="setChannel('call',this)">📞 Call</button>
+                  <button class="ch-tab" onclick="setChannel('social',this)">📲 Social</button>
+                </div>
+              </div>
+
+              <div class="field-group">
+                <label class="field-label">Customer Message</label>
+                <textarea id="triage-input" class="triage-textarea"
+                  placeholder="Paste or type the customer support message here…
+
+Example: My internet has been down since yesterday evening. I am unable to work from home. My account number is CA123456 and mobile is 9876543210. I was charged ₹599 twice last month. Please resolve this URGENTLY!"></textarea>
+              </div>
+
+              <!-- Sample messages -->
+              <div class="sample-label">Try a sample:</div>
+              <div class="sample-msgs">
+                <button class="sample-btn" onclick="loadSample(0)">🔴 Network Outage</button>
+                <button class="sample-btn" onclick="loadSample(1)">💳 Billing Dispute</button>
+                <button class="sample-btn" onclick="loadSample(2)">✈️ Roaming Issue</button>
+                <button class="sample-btn" onclick="loadSample(3)">📋 Plan Query</button>
+                <button class="sample-btn" onclick="loadSample(4)">😤 Complaint</button>
+              </div>
+
+              <button class="triage-analyze-btn" id="triage-btn" onclick="runTriage()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Analyze &amp; Triage
+              </button>
+            </div>
+
+            <!-- NER Results -->
+            <div class="card" id="ner-card" style="display:none">
+              <div class="card-title">🔍 Extracted Entities (NER)</div>
+              <div class="ner-grid" id="ner-grid"></div>
+            </div>
+          </div>
+
+          <!-- Middle: Triage result -->
+          <div class="triage-result-col">
+            <div class="card triage-result-card" id="triage-result-card">
+              <div class="triage-placeholder" id="triage-placeholder">
+                <div class="tp-icon">🤖</div>
+                <div class="tp-title">Ready to Analyze</div>
+                <div class="tp-sub">Enter a customer message and click "Analyze &amp; Triage" to see AI classification, intent detection, entity extraction, and a draft response.</div>
+              </div>
+
+              <div id="triage-result-body" style="display:none">
+                <!-- Urgency + intent header -->
+                <div class="tr-header" id="tr-header">
+                  <div class="tr-urgency-wrap">
+                    <div class="tr-urgency-label" id="tr-urgency-label">MEDIUM</div>
+                    <div class="tr-urgency-reason" id="tr-urgency-reason"></div>
+                  </div>
+                  <div class="tr-meta">
+                    <div class="tr-intent" id="tr-intent-badge"></div>
+                    <div class="tr-confidence" id="tr-confidence"></div>
+                    <div class="tr-ai-badge" id="tr-ai-badge" style="display:none">✨ AI</div>
+                  </div>
+                </div>
+
+                <!-- Ticket info -->
+                <div class="tr-ticket-bar">
+                  <div>
+                    <span class="tr-ticket-id" id="tr-ticket-id"></span>
+                    <span class="tr-channel" id="tr-channel"></span>
+                  </div>
+                  <div class="tr-time-est">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span id="tr-handle-time"></span>
+                  </div>
+                </div>
+
+                <!-- Sentiment + escalation -->
+                <div class="tr-flags">
+                  <div class="tr-flag sentiment" id="tr-sentiment"></div>
+                  <div class="tr-flag escalate" id="tr-escalate" style="display:none">⚠️ Escalate to Specialist</div>
+                </div>
+
+                <!-- Key issues -->
+                <div class="tr-section">
+                  <div class="tr-section-title">🔑 Key Issues</div>
+                  <div class="tr-issues" id="tr-issues"></div>
+                </div>
+
+                <!-- Draft response -->
+                <div class="tr-section">
+                  <div class="tr-section-title-row">
+                    <div class="tr-section-title">✉️ Draft Response</div>
+                    <button class="copy-btn" onclick="copyDraft()">Copy</button>
+                  </div>
+                  <div class="tr-draft" id="tr-draft"></div>
+                </div>
+
+                <!-- Resolution steps -->
+                <div class="tr-section">
+                  <div class="tr-section-title">📋 Resolution Steps</div>
+                  <div class="tr-steps" id="tr-steps"></div>
+                </div>
+
+                <!-- Status update -->
+                <div class="tr-section">
+                  <div class="tr-section-title">📁 Update Status</div>
+                  <div class="status-btn-row">
+                    <button class="status-btn in-progress" onclick="updateStatus('IN_PROGRESS')">In Progress</button>
+                    <button class="status-btn resolved" onclick="updateStatus('RESOLVED')">Resolved</button>
+                    <button class="status-btn closed" onclick="updateStatus('CLOSED')">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Ticket queue -->
+          <div class="triage-queue-col">
+            <div class="card">
+              <div class="card-title-row">
+                <div class="card-title">🗂️ Ticket Queue</div>
+                <button class="refresh-btn" onclick="loadTickets()">↻</button>
+              </div>
+              <div class="queue-filter">
+                <button class="qf active" onclick="filterQueue('all',this)">All</button>
+                <button class="qf" onclick="filterQueue('CRITICAL',this)">🔴 Critical</button>
+                <button class="qf" onclick="filterQueue('HIGH',this)">🟠 High</button>
+                <button class="qf" onclick="filterQueue('OPEN',this)">Open</button>
+              </div>
+              <div class="ticket-list" id="ticket-list">
+                <div class="tl-empty">No tickets yet. Analyze a message to create one.</div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /triage-layout -->
+      </div>
+    </div>
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<div class="modal-overlay" id="pay-modal" style="display:none" onclick="closePayModal()">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="mc-icon">✅</div><div class="mc-title">Payment Successful!</div>
+    <div class="mc-txn" id="modal-txn"></div><div class="mc-detail" id="modal-detail"></div>
+    <button class="mc-close" onclick="closePayModal()">Done</button>
+  </div>
+</div>
+<div class="toast-wrap" id="toast"><span id="toast-msg">Done</span></div>
+
+<!-- ══ AUTH MODAL ══ -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card" id="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 17 4 4 4-4"/></svg>
+      </div>
+      <div>
+        <div class="auth-logo-name">TeleBot</div>
+        <div class="auth-logo-sub">AI Telecomm Platform</div>
+      </div>
+    </div>
+
+    <!-- Tab switcher -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div id="auth-login-form">
+      <div class="auth-field">
+        <label class="auth-label">Username or Email</label>
+        <input type="text" id="login-user" class="auth-input" placeholder="Enter username or email" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <div class="auth-input-wrap">
+          <input type="password" id="login-pass" class="auth-input" placeholder="Enter password" autocomplete="current-password">
+          <button class="auth-eye" onclick="togglePass('login-pass',this)" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="auth-error" id="login-error" style="display:none"></div>
+      <button class="auth-submit" id="login-btn" onclick="doLogin()">
+        <span id="login-btn-txt">Sign In</span>
+        <div class="auth-spinner" id="login-spin" style="display:none"></div>
+      </button>
+      <div class="auth-switch">Don't have an account? <button onclick="switchAuthTab('register')">Create one</button></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="auth-register-form" style="display:none">
+      <div class="auth-field">
+        <label class="auth-label">Full Name</label>
+        <input type="text" id="reg-name" class="auth-input" placeholder="Your full name" autocomplete="name">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Username</label>
+        <input type="text" id="reg-user" class="auth-input" placeholder="Choose a username" autocomplete="username">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input type="email" id="reg-email" class="auth-input" placeholder="your@email.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Password</label>
+        <div class="auth-input-wrap">
+          <input type="password" id="reg-pass" class="auth-input" placeholder="Min. 6 characters" autocomplete="new-password">
+          <button class="auth-eye" onclick="togglePass('reg-pass',this)" tabindex="-1">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="auth-error" id="reg-error" style="display:none"></div>
+      <button class="auth-submit" id="reg-btn" onclick="doRegister()">
+        <span id="reg-btn-txt">Create Account</span>
+        <div class="auth-spinner" id="reg-spin" style="display:none"></div>
+      </button>
+      <div class="auth-switch">Already have an account? <button onclick="switchAuthTab('login')">Sign in</button></div>
+    </div>
+  </div>
 </div>
 
-<div id="toast" class="toast hidden"></div>
-
-<!-- ══════════════════════════════════════════
-     LANDING PAGE  (public)
-══════════════════════════════════════════ -->
-<section id="landing-page" class="page active">
-  <div class="landing-container">
-    <div class="landing-hero">
-      <div class="logo-big"><i class="fas fa-mobile-alt"></i><span>TeleCom</span></div>
-      <h1>Telecomm Intelligence Platform</h1>
-      <p>Manage your account, track usage, and master telecom with our AI-powered Quiz Bot</p>
-      <div class="landing-btns">
-        <button class="btn btn-primary" onclick="switchPage('login')">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </button>
-        <button class="btn btn-outline" onclick="switchPage('register')">
-          <i class="fas fa-user-plus"></i> Create Account
-        </button>
-      </div>
-    </div>
-
-    <div class="landing-features">
-      <div class="feature-card">
-        <i class="fas fa-box"></i>
-        <h3>Flexible Plans</h3>
-        <p>Basic, Standard, or Premium — tailored to your needs</p>
-      </div>
-      <div class="feature-card">
-        <i class="fas fa-chart-line"></i>
-        <h3>Usage Tracking</h3>
-        <p>Monitor calls, SMS and data in real time</p>
-      </div>
-      <div class="feature-card">
-        <i class="fas fa-brain"></i>
-        <h3>AI Quiz Bot</h3>
-        <p>Test telecom knowledge with AI-evaluated answers</p>
-      </div>
-      <div class="feature-card">
-        <i class="fas fa-robot"></i>
-        <h3>AI Tutor</h3>
-        <p>Chat with TeleBot — your 24/7 telecom expert</p>
-      </div>
-    </div>
-
-    <div class="landing-plans-preview">
-      <h2>Our Plans</h2>
-      <div class="preview-plans" id="previewPlans"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     LOGIN
-══════════════════════════════════════════ -->
-<section id="login-page" class="page">
-  <div class="auth-container">
-    <div class="auth-card">
-      <div class="back-link" onclick="switchPage('landing')">
-        <i class="fas fa-arrow-left"></i> Back
-      </div>
-      <div class="logo">
-        <i class="fas fa-mobile-alt"></i>
-        <h1>TeleCom</h1>
-      </div>
-      <h2>Welcome Back</h2>
-      <p>Login to access your account</p>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label>Username or Email</label>
-          <div class="input-wrap">
-            <i class="fas fa-user input-icon"></i>
-            <input type="text" id="login_username" placeholder="Enter username or email" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <div class="input-wrap">
-            <i class="fas fa-lock input-icon"></i>
-            <input type="password" id="login_password" placeholder="Enter password" required>
-          </div>
-        </div>
-        <p id="loginError" class="form-error hidden"></p>
-        <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </button>
-      </form>
-      <p class="toggle-text">Don't have an account? <a onclick="switchPage('register')">Register here</a></p>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     REGISTER
-══════════════════════════════════════════ -->
-<section id="register-page" class="page">
-  <div class="auth-container">
-    <div class="auth-card">
-      <div class="back-link" onclick="switchPage('landing')">
-        <i class="fas fa-arrow-left"></i> Back
-      </div>
-      <div class="logo">
-        <i class="fas fa-mobile-alt"></i>
-        <h1>TeleCom</h1>
-      </div>
-      <h2>Create Account</h2>
-      <p>Join TeleCom today — it's free</p>
-      <form id="registerForm" onsubmit="handleRegister(event)">
-        <div class="form-group">
-          <label>Full Name</label>
-          <div class="input-wrap">
-            <i class="fas fa-id-card input-icon"></i>
-            <input type="text" id="reg_fullname" placeholder="Enter your full name" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Username</label>
-          <div class="input-wrap">
-            <i class="fas fa-user input-icon"></i>
-            <input type="text" id="reg_username" placeholder="Choose a username" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Email Address</label>
-          <div class="input-wrap">
-            <i class="fas fa-envelope input-icon"></i>
-            <input type="email" id="reg_email" placeholder="Enter your email" required>
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <div class="input-wrap">
-            <i class="fas fa-lock input-icon"></i>
-            <input type="password" id="reg_password" placeholder="Min 6 characters" required>
-          </div>
-        </div>
-        <p id="registerError" class="form-error hidden"></p>
-        <button type="submit" class="btn btn-primary btn-full" id="registerBtn">
-          <i class="fas fa-user-plus"></i> Create Account
-        </button>
-      </form>
-      <p class="toggle-text">Already have an account? <a onclick="switchPage('login')">Login here</a></p>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════════
-     NAVBAR
-══════════════════════════════════════════ -->
-<nav class="navbar" id="navbar" style="display:none;">
-  <div class="nav-container">
-    <div class="logo" onclick="switchPage('dashboard')">
-      <i class="fas fa-mobile-alt"></i>TeleCom
-    </div>
-    <ul class="nav-menu">
-      <li><a class="nav-link" onclick="switchPage('dashboard')"><i class="fas fa-home"></i>Dashboard</a></li>
-      <li><a class="nav-link" onclick="switchPage('plans')"><i class="fas fa-box"></i>Plans</a></li>
-      <li><a class="nav-link" onclick="switchPage('bills')"><i class="fas fa-file-invoice"></i>Bills</a></li>
-      <li><a class="nav-link" onclick="switchPage('paybill')"><i class="fas fa-bolt"></i>Recharge</a></li>
-      <li><a class="nav-link" onclick="switchPage('quiz')"><i class="fas fa-brain"></i>Quiz Bot</a></li>
-      <li><a class="nav-link" onclick="switchPage('tutor')"><i class="fas fa-robot"></i>AI Tutor</a></li>
-    </ul>
-    <div class="user-section">
-      <div class="notif-bell" onclick="switchPage('notifications')">
-        <i class="fas fa-bell"></i>
-        <span class="notif-dot" id="notifDot" style="display:none;"></span>
-      </div>
-      <div class="user-avatar" id="userAvatar" onclick="toggleMenu()">U</div>
-      <div class="user-dropdown hidden" id="userMenu">
-        <div class="user-menu-header">
-          <strong id="menuName">User</strong>
-          <small id="menuEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="dfaaacbaad9fbab2beb6b3f1bcb0b2">[email&#160;protected]</a></small>
-        </div>
-        <a onclick="switchPage('profile')"><i class="fas fa-user"></i> My Profile</a>
-        <a onclick="switchPage('quiz-history')"><i class="fas fa-history"></i> Quiz History</a>
-        <a onclick="handleLogout()" class="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<!-- ══════════════════════════════════════════
-     MAIN APP
-══════════════════════════════════════════ -->
-<main class="main-container" id="main-container" style="display:none;">
-
-  <!-- ── DASHBOARD ── -->
-  <section id="dashboard-page" class="page">
-    <div class="page-header">
-      <h2 class="section-title">Dashboard</h2>
-      <p class="section-sub" id="welcomeMsg">Welcome back!</p>
-    </div>
-    <div class="cards-grid">
-      <div class="card">
-        <div class="card-top">
-          <h3><i class="fas fa-box"></i> Active Plan</h3>
-          <span class="badge">Active</span>
-        </div>
-        <p class="big-text" id="planName">—</p>
-        <p class="plan-price" id="planPrice">—</p>
-        <div class="plan-info">
-          <span><i class="fas fa-phone"></i> <span id="calls">—</span> min</span>
-          <span><i class="fas fa-comment"></i> <span id="sms">—</span> SMS</span>
-          <span><i class="fas fa-wifi"></i> <span id="data">—</span> GB</span>
-        </div>
-        <button onclick="switchPage('plans')" class="btn btn-primary">Change Plan</button>
-      </div>
-
-      <div class="card">
-        <div class="card-top">
-          <h3><i class="fas fa-file-invoice-dollar"></i> Current Bill</h3>
-          <span class="badge badge-warning">Due</span>
-        </div>
-        <p class="big-text" id="billAmount">—</p>
-        <p class="text-small" id="billPeriod">—</p>
-        <p class="due-text">Due in 5 days</p>
-        <button onclick="payBill()" class="btn btn-primary">Pay Now</button>
-      </div>
-
-      <div class="card">
-        <h3><i class="fas fa-chart-pie"></i> Usage This Month</h3>
-        <div class="usage-item">
-          <div class="usage-header"><span>Calls</span><span id="callsPct">—</span></div>
-          <div class="usage-bar"><div class="usage-fill" id="callsBar" style="width:0%"></div></div>
-        </div>
-        <div class="usage-item">
-          <div class="usage-header"><span>SMS</span><span id="smsPct">—</span></div>
-          <div class="usage-bar"><div class="usage-fill sms" id="smsBar" style="width:0%"></div></div>
-        </div>
-        <div class="usage-item">
-          <div class="usage-header"><span>Data</span><span id="dataPct">—</span></div>
-          <div class="usage-bar"><div class="usage-fill data" id="dataBar" style="width:0%"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card full-width">
-      <h3><i class="fas fa-phone-alt"></i> Recent Calls</h3>
-      <div id="callsList" class="calls-list"></div>
-    </div>
-  </section>
-
-  <!-- ── PAY BILL / RECHARGE ── -->
-  <section id="paybill-page" class="page">
-    <div class="page-header">
-      <h2 class="section-title"><i class="fas fa-bolt"></i> Recharge & Pay Bills</h2>
-      <p class="section-sub">Mobile, DTH, Broadband, Electricity and more</p>
-    </div>
-
-    <!-- Service tabs -->
-    <div class="service-tabs">
-      <button class="service-tab active" onclick="selectService(this,'mobile')"><i class="fas fa-mobile-alt"></i> Mobile</button>
-      <button class="service-tab" onclick="selectService(this,'dth')"><i class="fas fa-tv"></i> DTH</button>
-      <button class="service-tab" onclick="selectService(this,'broadband')"><i class="fas fa-wifi"></i> Broadband</button>
-      <button class="service-tab" onclick="selectService(this,'postpaid')"><i class="fas fa-sim-card"></i> Postpaid</button>
-      <button class="service-tab" onclick="selectService(this,'electricity')"><i class="fas fa-plug"></i> Electricity</button>
-      <button class="service-tab" onclick="selectService(this,'gas')"><i class="fas fa-fire"></i> Gas</button>
-      <button class="service-tab" onclick="selectService(this,'water')"><i class="fas fa-tint"></i> Water</button>
-    </div>
-
-    <div class="card recharge-card">
-      <!-- Number input -->
-      <div class="form-group">
-        <label id="rechargeNumberLabel">Mobile Number</label>
-        <div style="display:flex;gap:10px;">
-          <div class="input-wrap" style="flex:1;">
-            <i class="fas fa-hashtag input-icon"></i>
-            <input type="tel" id="rechargeNumber" placeholder="Enter 10-digit number"
-              maxlength="10" style="width:100%;"
-              oninput="if(this.value.length===10 && selectedRechargeService==='mobile') detectOperator()">
-          </div>
-        </div>
-      </div>
-
-      <!-- Operator select -->
-      <div class="form-group">
-        <label>Operator / Provider</label>
-        <select id="operatorSelect" class="form-select">
-          <option value="">-- Select Operator --</option>
-        </select>
-      </div>
-
-      <!-- Plan picker (mobile only — auto-populated) -->
-      <div id="planPickerArea"></div>
-
-      <!-- Manual amount for non-mobile -->
-      <div class="form-group" id="manualAmountGroup" style="display:none;">
-        <label>Amount (₹)</label>
-        <div class="input-wrap">
-          <i class="fas fa-rupee-sign input-icon"></i>
-          <input type="number" id="manualAmount" placeholder="Enter amount" min="10" max="50000">
-        </div>
-        <button class="btn btn-primary" style="margin-top:12px;width:100%;"
-          onclick="confirmManualRecharge()">
-          <i class="fas fa-bolt"></i> Pay Now
-        </button>
-      </div>
-
-      <!-- Summary / confirm -->
-      <div id="rechargeSummary" style="display:none;"></div>
-    </div>
-
-    <!-- Transaction history -->
-    <div class="card" style="margin-top:20px;">
-      <h3><i class="fas fa-history"></i> Recent Transactions</h3>
-      <div id="txnList" style="margin-top:12px;">
-        <p style="color:var(--gray);text-align:center;padding:20px;">No transactions yet</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── PLANS ── -->
-  <section id="plans-page" class="page">
-    <div class="page-header">
-      <h2 class="section-title">Choose Your Plan</h2>
-      <p class="section-sub">Your current plan is highlighted in green</p>
-    </div>
-    <div class="plans-grid" id="plansGrid"></div>
-  </section>
-
-  <!-- ── BILLS ── -->
-  <section id="bills-page" class="page">
-    <h2 class="section-title">Bills & Payments</h2>
-    <div class="card">
-      <h3><i class="fas fa-file-invoice-dollar"></i> Current Bill</h3>
-      <div id="billsContainer" class="bills-list"></div>
-    </div>
-  </section>
-
-  <!-- ── CALLS ──
-  <section id="calls-page" class="page">
-    <h2 class="section-title">Call History</h2>
-    <div class="card">
-      <h3><i class="fas fa-phone-alt"></i> Recent Calls</h3>
-      <div id="callsFullList" class="calls-list"></div>
-    </div>
-  </section> -->
-
-  <!-- ── QUIZ BOT ── -->
-  <section id="quiz-page" class="page">
-    <div class="page-header">
-      <h2 class="section-title">Telecom Quiz Bot</h2>
-      <p class="section-sub">AI-evaluated answers · Speed bonus · Streak rewards</p>
-    </div>
-
-    <!-- Setup screen -->
-    <div id="quizSetup">
-      <div class="cards-grid">
-        <div class="card">
-          <h3><i class="fas fa-sliders-h"></i> Quiz Settings</h3>
-          <div class="form-group">
-            <label>Difficulty Level</label>
-            <div class="difficulty-pills">
-              <button class="diff-pill active" data-val="all"    onclick="setDiff(this)">All</button>
-              <button class="diff-pill"        data-val="easy"   onclick="setDiff(this)">Easy</button>
-              <button class="diff-pill"        data-val="medium" onclick="setDiff(this)">Medium</button>
-              <button class="diff-pill"        data-val="hard"   onclick="setDiff(this)">Hard</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Question Source</label>
-            <div class="difficulty-pills">
-              <button class="source-pill diff-pill active" data-src="static" onclick="setQuizSource(this)">📋 Static Bank</button>
-              <button class="source-pill diff-pill"        data-src="ai"     onclick="setQuizSource(this)">🤖 AI Generated</button>
-            </div>
-          </div>
-          <div class="form-group" id="aiTopicRow" style="display:none;">
-            <label>AI Topic</label>
-            <input id="aiTopicInput" type="text" class="form-select" placeholder="e.g. Jio plans, 5G technology, BSNL..." value="Indian telecom plans">
-          </div>
-          <div class="form-group">
-            <label>Number of Questions</label>
-            <select id="quizCount" class="form-select">
-              <option value="5">5 Questions — Quick</option>
-              <option value="8" selected>8 Questions — Standard</option>
-              <option value="10">10 Questions — Full</option>
-              <option value="15">15 Questions — Challenge</option>
-            </select>
-          </div>
-          <div class="quiz-tip">
-            <i class="fas fa-keyboard"></i>
-            Press <kbd>A</kbd><kbd>B</kbd><kbd>C</kbd><kbd>D</kbd> to answer quickly
-          </div>
-          <button class="btn btn-primary btn-full" onclick="startQuiz()" style="margin-top:16px;">
-            <i class="fas fa-play"></i> Start Quiz
-          </button>
-        </div>
-
-        <div class="card" id="quizStatsCard">
-          <h3><i class="fas fa-chart-bar"></i> Your Stats</h3>
-          <div class="stat-row"><span>Best Accuracy</span><strong id="statBest">—</strong></div>
-          <div class="stat-row"><span>Total Attempts</span><strong id="statAttempts">—</strong></div>
-          <div class="stat-row"><span>Avg Accuracy</span><strong id="statAvg">—</strong></div>
-          <button class="btn btn-outline-primary btn-full" onclick="switchPage('quiz-history')" style="margin-top:16px;">
-            <i class="fas fa-history"></i> View Full History
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Active quiz -->
-    <div id="quizActive" style="display:none;">
-      <div class="card full-width">
-        <div class="quiz-topbar">
-          <div class="quiz-meta">
-            <span id="qTopicPill" class="topic-pill">—</span>
-            <span id="qDiffPill"  class="diff-badge">—</span>
-          </div>
-          <div class="quiz-counters">
-            <span class="streak-counter" id="streakCounter" style="display:none;">
-              <i class="fas fa-fire"></i> <span id="streakNum">0</span>
-            </span>
-            <span class="timer-counter" id="timerDisplay">
-              <i class="fas fa-clock"></i> <span id="timerNum">30</span>s
-            </span>
-            <span class="qnum-counter">
-              Q <span id="qCurrent">1</span>/<span id="qTotal">8</span>
-            </span>
-          </div>
-        </div>
-
-        <div class="quiz-prog-wrap">
-          <div class="quiz-prog-bar" id="quizProgBar" style="width:0%"></div>
-        </div>
-
-        <div class="quiz-live-score">
-          <span>Score: <strong id="liveScore">0</strong></span>
-          <span>Correct: <strong id="liveCorrect" style="color:#10B981;">0</strong></span>
-          <span>Wrong: <strong id="liveWrong" style="color:#EF4444;">0</strong></span>
-        </div>
-
-        <div id="quizQuestion" class="quiz-question"></div>
-        <div id="quizOptions"  class="quiz-options"></div>
-        <div id="quizFeedback" class="quiz-feedback" style="display:none;"></div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;">
-          <button class="btn btn-outline-primary" onclick="quitQuiz()">
-            <i class="fas fa-times"></i> Quit
-          </button>
-          <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" style="display:none;">
-            Next Question <i class="fas fa-arrow-right"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Result screen -->
-    <div id="quizResult" style="display:none;">
-      <div class="card full-width">
-        <div class="quiz-result-header">
-          <div id="resultEmoji" class="result-emoji">🎉</div>
-          <div class="score-big" id="quizFinalScore">0/0</div>
-          <p id="resultMsg" class="result-msg"></p>
-        </div>
-
-        <div class="result-stats-grid">
-          <div class="result-stat"><span>Accuracy</span><strong id="resAccuracy">0%</strong></div>
-          <div class="result-stat"><span>Correct</span><strong id="resCorrect" style="color:#10B981;">0</strong></div>
-          <div class="result-stat"><span>Wrong</span><strong id="resWrong" style="color:#EF4444;">0</strong></div>
-          <div class="result-stat"><span>Best Streak</span><strong id="resStreak" style="color:#F97316;">0</strong></div>
-        </div>
-
-        <div id="topicBreakdown" class="topic-breakdown"></div>
-
-        <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="startQuiz()">
-            <i class="fas fa-redo"></i> Try Again
-          </button>
-          <button class="btn btn-outline-primary" onclick="switchPage('quiz-history')">
-            <i class="fas fa-history"></i> View History
-          </button>
-          <button class="btn btn-outline-primary" onclick="resetQuizSetup()">
-            <i class="fas fa-cog"></i> Change Settings
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ── AI TUTOR ── -->
-  <section id="tutor-page" class="page">
-    <div class="page-header">
-      <h2 class="section-title">AI Telecom Tutor</h2>
-      <p class="section-sub">Powered by Gemini — ask anything about telecom</p>
-    </div>
-
-    <div class="tutor-layout">
-
-      <!-- Chat panel -->
-      <div class="card tutor-chat-card">
-        <div class="tutor-header">
-          <div class="tutor-avatar"><i class="fas fa-robot"></i></div>
-          <div>
-            <strong>TeleBot</strong>
-            <div class="tutor-status"><span class="online-dot"></span> Online</div>
-          </div>
-          <div style="margin-left:auto;display:flex;gap:8px;">
-            <button class="icon-btn" onclick="clearChat()" title="Clear chat">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
-        </div>
-
-        <div id="chatMessages" class="chat-messages">
-          <div class="chat-msg bot">
-            <div class="chat-bubble">
-              👋 Hi! I'm <strong>TeleBot</strong>, your AI telecom expert.<br><br>
-              I know everything about 5G, IoT, NB-IoT, LTE-M, VoLTE, eSIM, plans, roaming, QoS and more. Ask me anything!
-              <div class="msg-time">Just now</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="chat-suggestions" id="chatSuggestions">
-          <button class="suggestion-chip" onclick="useSuggestion(this)">Show all Jio plans</button>
-          <button class="suggestion-chip" onclick="useSuggestion(this)">Compare Airtel vs Jio</button>
-          <button class="suggestion-chip" onclick="useSuggestion(this)">Best BSNL plan 2025</button>
-          <button class="suggestion-chip" onclick="useSuggestion(this)">Vi plans under ₹300</button>
-          <button class="suggestion-chip" onclick="useSuggestion(this)">What is 5G NR?</button>
-          <button class="suggestion-chip" onclick="useSuggestion(this)">NB-IoT vs LTE-M</button>
-        </div>
-
-        <div class="chat-input-area">
-          <textarea
-            id="chatInput"
-            class="chat-textarea"
-            placeholder="Ask about 5G, IoT, VoLTE, plans, roaming..."
-            rows="1"
-            onkeydown="handleChatKey(event)"
-            oninput="autoResize(this); updateCharCount(this)"
-            maxlength="500"
-          ></textarea>
-          <div class="chat-input-footer">
-            <span id="charCount" class="char-count">0/500</span>
-            <button class="btn btn-primary btn-sm" onclick="sendChat()" id="sendBtn">
-              <i class="fas fa-paper-plane"></i> Send
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sidebar -->
-      <div class="tutor-sidebar">
-        <div class="card">
-          <h3><i class="fas fa-book-open"></i> Topics</h3>
-          <div class="topic-list">
-            <button class="topic-btn" onclick="askTopic('all Jio prepaid plans')"><i class="fas fa-signal"></i>Jio Plans</button>
-            <button class="topic-btn" onclick="askTopic('all Airtel prepaid plans')"><i class="fas fa-signal"></i>Airtel Plans</button>
-            <button class="topic-btn" onclick="askTopic('all Vi Vodafone Idea plans')"><i class="fas fa-signal"></i>Vi Plans</button>
-            <button class="topic-btn" onclick="askTopic('all BSNL prepaid plans')"><i class="fas fa-signal"></i>BSNL Plans</button>
-            <button class="topic-btn" onclick="askTopic('JioFiber broadband plans')"><i class="fas fa-wifi"></i>JioFiber</button>
-            <button class="topic-btn" onclick="askTopic('5G Technology')"><i class="fas fa-broadcast-tower"></i>5G Technology</button>
-            <button class="topic-btn" onclick="askTopic('NB-IoT')"><i class="fas fa-microchip"></i>NB-IoT</button>
-            <button class="topic-btn" onclick="askTopic('VoLTE')"><i class="fas fa-phone"></i>VoLTE</button>
-            <button class="topic-btn" onclick="askTopic('eSIM')"><i class="fas fa-sim-card"></i>eSIM</button>
-            <button class="topic-btn" onclick="askTopic('Data Roaming')"><i class="fas fa-globe"></i>Roaming</button>
-          </div>
-        </div>
-
-        <div class="card" style="margin-top:16px;">
-          <h3><i class="fas fa-lightbulb"></i> Tips</h3>
-          <ul class="tips-list">
-            <li>Ask about specific plan features</li>
-            <li>Request real-world examples</li>
-            <li>Ask to compare two technologies</li>
-            <li>Shift+Enter for new line</li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ── QUIZ HISTORY ── -->
-  <section id="quiz-history-page" class="page">
-    <h2 class="section-title">Quiz History</h2>
-    <div class="card full-width" id="quizHistoryContainer">
-      <p style="color:var(--gray);text-align:center;padding:40px;">Loading history...</p>
-    </div>
-  </section>
-
-  <!-- ── NOTIFICATIONS ── -->
-  <section id="notifications-page" class="page">
-    <h2 class="section-title">Notifications</h2>
-    <div class="card full-width" id="notifContainer"></div>
-  </section>
-
-  <!-- ── PROFILE ── -->
-  <section id="profile-page" class="page">
-    <h2 class="section-title">My Profile</h2>
-    <div class="card" style="max-width:560px;">
-      <div style="text-align:center;margin-bottom:28px;">
-        <div class="profile-avatar" id="profileAvatar">U</div>
-        <h3 id="profileName" style="font-size:20px;margin-bottom:4px;">User</h3>
-        <p id="profileUsername" style="color:var(--gray);font-size:14px;">@user</p>
-        <span class="badge" style="margin-top:8px;">Active Account</span>
-      </div>
-      <form id="profileForm" onsubmit="updateProfile(event)">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" id="prof_fullname" placeholder="Full name">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="prof_email" placeholder="Email">
-        </div>
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" id="prof_phone" placeholder="Phone number">
-        </div>
-        <button type="submit" class="btn btn-primary btn-full">
-          <i class="fas fa-save"></i> Save Changes
-        </button>
-      </form>
-      <div class="profile-info-section">
-        <h4>Account Info</h4>
-        <div class="profile-info-row"><span>Member Since</span><strong id="memberSince">—</strong></div>
-        <div class="profile-info-row"><span>Current Plan</span><strong id="profilePlan">—</strong></div>
-        <div class="profile-info-row"><span>Account Status</span><strong style="color:#10B981;">Active</strong></div>
-      </div>
-      <button onclick="handleLogout()" class="btn btn-danger btn-full" style="margin-top:16px;">
-        <i class="fas fa-sign-out-alt"></i> Logout
-      </button>
-    </div>
-  </section>
-
-</main>
-
-<footer class="footer" id="footer" style="display:none;">
-  <p>&copy; 2024 Telecomm Intelligence Platform. All rights reserved.</p>
-</footer>
-
+<!-- User avatar / logout in topbar -->
 <script src="js/script.js"></script>
 </body>
 </html>
