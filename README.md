@@ -218,7 +218,11 @@ Create `backend/.env`:
 
 ```env
 # Required — free key at https://makersuite.google.com/app/apikey
-GEMINI_API_KEY=your_gemini_api_key_here
+GEMINI_API_KEY=your-gemini-api-key-here
+GEMINI_API_KEY_1=your-gemini-api-key-1-here
+GEMINI_API_KEY_2=your-gemini-api-key-2-here
+
+GROQ_API_KEY=your-groq-api-key-here
 
 # Optional — change for production
 SECRET_KEY=telecom-secret-2024
